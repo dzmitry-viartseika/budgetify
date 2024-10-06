@@ -2,9 +2,15 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { Logger } from '@nestjs/common';
+import * as fs from 'fs';
+import * as process from 'node:process';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, { cors: true });
+  const httpsOptions = {
+    key: fs.readFileSync('./src/cert/localhost.key.pem'),
+    cert: fs.readFileSync('./src/cert/localhost.cert.pem'),
+  };
+  const app = await NestFactory.create(AppModule, { cors: true, httpsOptions });
   app.useGlobalPipes();
   const logger = new Logger();
   const config = new DocumentBuilder()
