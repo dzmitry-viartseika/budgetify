@@ -12,6 +12,21 @@ export class UsersService {
   constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
 
   async create(createUserDto: CreateUserDto): Promise<UserDocument> {
+    if (!createUserDto.email || !createUserDto.password) {
+      throw new CustomHttpException({
+        status: 'error',
+        statusCode: HttpStatus.BAD_REQUEST,
+        error: {
+          code: 'INVALID_CREDENTIALS',
+          message: 'You must fill in required fields',
+          details: 'There was an error while trying to create the user.',
+          timestamp: new Date().toISOString(),
+          path: '/users',
+          suggestion: 'Please check the input data.'
+        },
+      }, HttpStatus.BAD_REQUEST);
+    }
+
     const existingUser = await this.userModel.findOne({ email: createUserDto.email }).exec();
     if (existingUser) {
       this.logger.error(`User with email ${createUserDto.email} already exists`);
