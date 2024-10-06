@@ -80,7 +80,6 @@ export class AuthService {
 
   async signIn(data: CreateAuthDto) {
     const user = await this.usersService.findByEmail(data.email);
-    this.logger.verbose(`User logging in with ID: ${user.id} and email address ${user.email}`);
     if (!user) {
       throw new CustomHttpException({
         status: 'error',
@@ -95,6 +94,7 @@ export class AuthService {
         },
       }, HttpStatus.UNAUTHORIZED);
     }
+    this.logger.verbose(`User logging in with ID: ${user.id} and email address ${user.email}`);
     const passwordMatches = await bcrypt.compare(data.password, user.password);
     if (!passwordMatches) {
       throw new CustomHttpException({
