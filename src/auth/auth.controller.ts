@@ -5,7 +5,7 @@ import { RefreshTokenGuard } from '../guards/refreshToken.guard';
 import { AuthService } from './auth.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import {
-  ApiBadRequestResponse,
+  ApiBadRequestResponse, ApiBearerAuth,
   ApiCreatedResponse,
   ApiInternalServerErrorResponse, ApiOkResponse,
   ApiTags,
@@ -147,6 +147,7 @@ export class AuthController {
   @ApiInternalServerErrorResponse({
     description: 'Internal server error.',
   })
+  @ApiBearerAuth()
   refreshTokens(@Req() req: Request) {
     const userId = req.user['sub'];
     const refreshToken = req.user['refreshToken'];

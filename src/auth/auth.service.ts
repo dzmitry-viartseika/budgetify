@@ -12,6 +12,7 @@ import * as bcrypt from 'bcrypt';
 import { UpdateUserDto } from '../users/dto/update-user.dto';
 import { UserDto } from './dto/user.dto';
 import { CustomHttpException } from '../utils/CustomHttpException';
+import { LoginAuthDto } from './dto/login-auth.dto';
 
 const SALT_OF_ROUNDS = 3;
 
@@ -25,6 +26,21 @@ export class AuthService {
   ) {}
   async signUp(createUserDto: CreateUserDto): Promise<any> {
     this.logger.verbose(`Creating user with email address: "${createUserDto.email}"`);
+
+    if (!createUserDto.email || !createUserDto.password) {
+      throw new CustomHttpException({
+        status: 'error',
+        statusCode: HttpStatus.BAD_REQUEST,
+        error: {
+          code: 'INVALID_CREDENTIALS',
+          message: 'You must fill in required fields',
+          details: 'There was an error while trying to create the user.',
+          timestamp: new Date().toISOString(),
+          path: '/auth/signup',
+          suggestion: 'Please check the input data.'
+        },
+      }, HttpStatus.BAD_REQUEST);
+    }
 
     const userExists = await this.usersService.findByEmail(
       createUserDto.email,
@@ -78,7 +94,22 @@ export class AuthService {
 
   }
 
-  async signIn(data: CreateAuthDto) {
+  async signIn(data: LoginAuthDto) {
+    if (!data.email || !data.password) {
+      throw new CustomHttpException({
+        status: 'error',
+        statusCode: HttpStatus.BAD_REQUEST,
+        error: {
+          code: 'INVALID_CREDENTIALS',
+          message: 'You must fill in required fields',
+          details: 'There was an error while trying to create the user.',
+          timestamp: new Date().toISOString(),
+          path: '/auth/signin',
+          suggestion: 'Please check the input data.'
+        },
+      }, HttpStatus.BAD_REQUEST);
+    }
+
     const user = await this.usersService.findByEmail(data.email);
     if (!user) {
       throw new CustomHttpException({
