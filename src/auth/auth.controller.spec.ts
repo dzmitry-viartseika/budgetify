@@ -80,39 +80,4 @@ describe('AuthController', () => {
       await expect(authController.signin(loginData)).rejects.toThrow('Custom Http Exception');
     });
   });
-
-  // describe('logout', () => {
-  //   it('should log out a user successfully', async () => {
-  //     const req: Request = { user: { sub: 'userId' } } as Request;
-  //     await authController.logout(req);
-  //     expect(mockAuthService.logout).toHaveBeenCalledWith(req.user['sub']);
-  //   });
-  //
-  //   it('should handle logout error', async () => {
-  //     const req: Request = { user: { sub: 'userId' } } as Request;
-  //     mockAuthService.logout.mockImplementation(() => {
-  //       throw new Error('Logout failed');
-  //     });
-  //
-  //     await expect(authController.logout(req)).rejects.toThrow('Logout failed');
-  //   });
-  // });
-
-  // describe('refreshTokens', () => {
-  //   it('should refresh tokens successfully', async () => {
-  //     const req: Request = { user: { sub: 'userId', refreshToken: 'refreshToken' } } as Request;
-  //     const result = { accessToken: 'newAccessToken' };
-  //     mockAuthService.refreshTokens.mockResolvedValue(result);
-  //
-  //     expect(await authController.refreshTokens(req)).toEqual(result);
-  //     expect(mockAuthService.refreshTokens).toHaveBeenCalledWith(req.user['sub'], req.user['refreshToken']);
-  //   });
-  //
-  //   it('should throw error on invalid refresh token', async () => {
-  //     const req: Request = { user: { sub: 'userId', refreshToken: 'invalidToken' } } as Request;
-  //     mockAuthService.refreshTokens.mockRejectedValue(new Error('Unauthorized: Invalid or expired refresh token'));
-  //
-  //     await expect(authController.refreshTokens(req)).rejects.toThrow('Unauthorized: Invalid or expired refresh token');
-  //   });
-  // });
 });
