@@ -33,29 +33,7 @@ export class AuthController {
     description: 'Internal server error.',
   })
   async signup(@Body() createUserDto: CreateAuthDto) {
-    try {
-      this.logger.verbose(`Create a new user with email address: "${createUserDto.email}".`);
-      const user = await  this.authService.signUp(createUserDto);
-      this.logger.log(`User created with ID: ${user.id}`);
-      return user;
-    } catch (error) {
-      if (error instanceof CustomHttpException) {
-        throw error;
-      }
-      this.logger.error(`Failed to create user: ${error.message}`);
-      throw new CustomHttpException({
-        status: 'error',
-        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-        error: {
-          code: 'INTERNAL_SERVER_ERROR',
-          message: 'An internal server error occurred',
-          details: 'Something went wrong on the server.',
-          timestamp: new Date().toISOString(),
-          path: '/users',
-          suggestion: 'Please try again later.'
-        },
-      }, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    return await this.authService.signUp(createUserDto);
   }
 
   @Post('signin')
@@ -74,29 +52,7 @@ export class AuthController {
     description: 'Internal server error.',
   })
   async signin(@Body() data: CreateAuthDto) {
-    try {
-      this.logger.verbose(`Sign in the user with email address: "${data.email}"`);
-      const user = await this.authService.signIn(data);
-      this.logger.log(`User logged in with ID: ${user.id}`);
-      return user;
-    } catch (error) {
-      if (error instanceof CustomHttpException) {
-        throw error;
-      }
-      this.logger.error(`Failed to logged in user: ${error.message}`);
-      throw new CustomHttpException({
-        status: 'error',
-        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-        error: {
-          code: 'INTERNAL_SERVER_ERROR',
-          message: 'An internal server error occurred',
-          details: 'Something went wrong on the server.',
-          timestamp: new Date().toISOString(),
-          path: '/users',
-          suggestion: 'Please try again later.'
-        },
-      }, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    return await this.authService.signIn(data);
   }
 
   @UseGuards(AccessTokenGuard)
@@ -112,27 +68,7 @@ export class AuthController {
     description: 'Internal server error.',
   })
   logout(@Req() req: Request) {
-    try {
-      this.logger.verbose(`Logged out the user with email address: "${req.user['sub']}"`);
-      return  this.authService.logout(req.user['sub']);
-    } catch (error) {
-      if (error instanceof CustomHttpException) {
-        throw error;
-      }
-      this.logger.error(`Failed to delete user: ${error.message}`);
-      throw new CustomHttpException({
-        status: 'error',
-        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-        error: {
-          code: 'INTERNAL_SERVER_ERROR',
-          message: 'An internal server error occurred',
-          details: 'Something went wrong on the server.',
-          timestamp: new Date().toISOString(),
-          path: '/users',
-          suggestion: 'Please try again later.'
-        },
-      }, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    return this.authService.logout(req.user['userId']);
   }
 
   @UseGuards(RefreshTokenGuard)
@@ -149,7 +85,7 @@ export class AuthController {
   })
   @ApiBearerAuth()
   refreshTokens(@Req() req: Request) {
-    const userId = req.user['sub'];
+    const userId = req.user['userId'];
     const refreshToken = req.user['refreshToken'];
     return this.authService.refreshTokens(userId, refreshToken);
   }

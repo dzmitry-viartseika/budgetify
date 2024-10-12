@@ -5,7 +5,7 @@ import {
   Body,
   Patch,
   Param,
-  Delete, Logger, HttpStatus,
+  Delete, Logger, HttpStatus, UseFilters, HttpCode, UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -14,10 +14,10 @@ import {
   ApiBadRequestResponse,
   ApiConflictResponse,
   ApiCreatedResponse,
-  ApiForbiddenResponse, ApiInternalServerErrorResponse, ApiNotFoundResponse, ApiOkResponse,
+  ApiForbiddenResponse, ApiInternalServerErrorResponse, ApiNotFoundResponse, ApiOkResponse, ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { CustomHttpException } from '../utils/CustomHttpException';
+import { AccessTokenGuard } from '../guards/accessToken.guard';
 
 @ApiTags('users')
 @Controller('users')
@@ -25,7 +25,8 @@ export class UsersController {
   private logger = new Logger(UsersService.name);
   constructor(private readonly usersService: UsersService ) {}
 
-  @Post()
+  @ApiResponse({ status: HttpStatus.CREATED, description: 'User created successfully.' })
+  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Failed to create user due to invalid data.' })
   @ApiCreatedResponse({
     description: 'The user has been successfully created.',
     type: CreateUserDto,
@@ -42,31 +43,9 @@ export class UsersController {
   @ApiInternalServerErrorResponse({
     description: 'Internal Server Error: Something went wrong on the server.',
   })
+  @Post()
   async create(@Body() createUserDto: CreateUserDto) {
-    try {
-      this.logger.verbose(`Creating user with email address: "${createUserDto.email}"`);
-      const user = await this.usersService.create(createUserDto);
-      this.logger.log(`User created with ID: ${user.id}`);
-      return user;
-    } catch (error) {
-      if (error instanceof CustomHttpException) {
-        throw error;
-      }
-
-      this.logger.error(`Failed to create user: ${error.message}`);
-      throw new CustomHttpException({
-        status: 'error',
-        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-        error: {
-          code: 'INTERNAL_SERVER_ERROR',
-          message: 'An internal server error occurred',
-          details: 'Something went wrong on the server.',
-          timestamp: new Date().toISOString(),
-          path: '/users',
-          suggestion: 'Please try again later.'
-        },
-      }, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    return await this.usersService.create(createUserDto);
   }
 
   @ApiCreatedResponse({
@@ -75,34 +54,15 @@ export class UsersController {
   @ApiForbiddenResponse({
     description: 'Forbidden: You do not have the necessary permissions.',
   })
+  @ApiResponse({ status: HttpStatus.CREATED, description: 'Users fetched successfully.' })
+  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Failed to fetch users.' })
+  @ApiResponse({ status: HttpStatus.FORBIDDEN, description: 'Forbidden: You do not have the necessary permission.' })
+  @UseGuards(AccessTokenGuard)
   @Get()
   async findAll() {
-    try {
-      this.logger.verbose('Fetching all users');
-      const users =  this.usersService.findAll();
-      this.logger.log(`fetched all users: ${users}`);
-      return users;
-    } catch (error) {
-      if (error instanceof CustomHttpException) {
-        throw error;
-      }
-      this.logger.error(`Failed to fetch users: ${error.message}`);
-      throw new CustomHttpException({
-        status: 'error',
-        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-        error: {
-          code: 'INTERNAL_SERVER_ERROR',
-          message: 'An internal server error occurred',
-          details: 'Something went wrong on the server.',
-          timestamp: new Date().toISOString(),
-          path: '/users',
-          suggestion: 'Please try again later.'
-        },
-      }, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    return await this.usersService.findAll();
   }
 
-  @Get(':id')
   @ApiOkResponse({
     description: 'User found.',
     type: CreateUserDto,
@@ -119,33 +79,15 @@ export class UsersController {
   @ApiInternalServerErrorResponse({
     description: 'Internal Server Error: Something went wrong on the server.',
   })
+  @ApiResponse({ status: HttpStatus.CREATED, description: 'User fetched successfully.' })
+  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Failed to fetch user.' })
+  @ApiResponse({ status: HttpStatus.FORBIDDEN, description: 'Forbidden: You do not have the necessary permission.' })
+  @UseGuards(AccessTokenGuard)
+  @Get(':id')
   async findById(@Param('id') id: string) {
-    try {
-      this.logger.verbose(`Fetching user with ID: ${id}.`);
-      const user =  this.usersService.findById(id);
-      this.logger.log(`fetched users by ID: ${user}`);
-      return user;
-    } catch (error) {
-      if (error instanceof CustomHttpException) {
-        throw error;
-      }
-      this.logger.error(`Failed to fetch user: ${error.message} with ID ${id}`);
-      throw new CustomHttpException({
-        status: 'error',
-        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-        error: {
-          code: 'INTERNAL_SERVER_ERROR',
-          message: 'An internal server error occurred',
-          details: 'Something went wrong on the server.',
-          timestamp: new Date().toISOString(),
-          path: `/users/${id}`,
-          suggestion: 'Please try again later.'
-        },
-      }, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    return this.usersService.findById(id);
   }
 
-  @Patch(':id')
   @ApiOkResponse({
     description: 'User successfully updated.',
     type: UpdateUserDto,
@@ -162,31 +104,15 @@ export class UsersController {
   @ApiInternalServerErrorResponse({
     description: 'Internal Server Error: Something went wrong on the server.',
   })
+  @ApiResponse({ status: HttpStatus.CREATED, description: 'User updated successfully.' })
+  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Failed to update user.' })
+  @ApiResponse({ status: HttpStatus.FORBIDDEN, description: 'Forbidden: You do not have the necessary permission.' })
+  @UseGuards(AccessTokenGuard)
+  @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    try {
-      this.logger.verbose(`Updating user with ID: ${id}.`);
-      return this.usersService.update(id, updateUserDto);
-    } catch (error) {
-      if (error instanceof CustomHttpException) {
-        throw error;
-      }
-      this.logger.error(`Failed to update user: ${error.message} with ID ${id} and following data ${updateUserDto}`);
-      throw new CustomHttpException({
-        status: 'error',
-        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-        error: {
-          code: 'INTERNAL_SERVER_ERROR',
-          message: 'An internal server error occurred',
-          details: 'Something went wrong on the server.',
-          timestamp: new Date().toISOString(),
-          path: `/users/${id}`,
-          suggestion: 'Please try again later.'
-        },
-      }, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    return this.usersService.update(id, updateUserDto);
   }
 
-  @Delete(':id')
   @ApiOkResponse({
     description: 'User successfully deleted.',
   })
@@ -202,27 +128,12 @@ export class UsersController {
   @ApiInternalServerErrorResponse({
     description: 'Internal Server Error: Something went wrong on the server.',
   })
+  @ApiResponse({ status: HttpStatus.CREATED, description: 'User deleted successfully.' })
+  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Failed to delete user.' })
+  @ApiResponse({ status: HttpStatus.FORBIDDEN, description: 'Forbidden: You do not have the necessary permission.' })
+  @UseGuards(AccessTokenGuard)
+  @Delete(':id')
   remove(@Param('id') id: string) {
-    try {
-      this.logger.verbose(`Deleting user with ID: ${id}.`);
-      return this.usersService.remove(id);
-    } catch (error) {
-      if (error instanceof CustomHttpException) {
-        throw error;
-      }
-      this.logger.error(`Failed to delete user: ${error.message} with ID ${id}`);
-      throw new CustomHttpException({
-        status: 'error',
-        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-        error: {
-          code: 'INTERNAL_SERVER_ERROR',
-          message: 'An internal server error occurred',
-          details: 'Something went wrong on the server.',
-          timestamp: new Date().toISOString(),
-          path: `/users/${id}`,
-          suggestion: 'Please try again later.'
-        },
-      }, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    return this.usersService.remove(id);
   }
 }
