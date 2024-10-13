@@ -4,6 +4,8 @@ import { Types } from 'mongoose';
 import { User } from '../../users/schemas/user.schema';
 
 export type CategoryDocument = Category & Document;
+export type CategoryType = 'Expense' | 'Income';
+
 
 @Schema()
 export class Category extends Document {
@@ -12,6 +14,9 @@ export class Category extends Document {
 
   @Prop({ required: true })
   name: string;
+
+  @Prop({ required: true, enum: ['Expense', 'Income'], default: 'Expense' })
+  type: CategoryType;
 
   @Prop({default: now()})
   createdAt: Date;
