@@ -1,5 +1,5 @@
 export class UserDto {
-  id: string;
+  userId: string;
   email: string;
   createdAt: Date;
   updatedAt: Date;
@@ -7,7 +7,7 @@ export class UserDto {
   refreshToken: string;
 
   constructor(user: any, tokens: { accessToken: string; refreshToken: string }) {
-    this.id = user.id;
+    this.userId = user._id;
     this.email = user.email;
     this.createdAt = user.createdAt;
     this.updatedAt = user.updatedAt;

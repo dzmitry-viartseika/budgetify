@@ -5,7 +5,7 @@ import {
   Body,
   Patch,
   Param,
-  Delete, Logger, HttpStatus, UseFilters, HttpCode, UseGuards,
+  Delete, HttpStatus, UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -22,7 +22,6 @@ import { AccessTokenGuard } from '../guards/accessToken.guard';
 @ApiTags('users')
 @Controller('users')
 export class UsersController {
-  private logger = new Logger(UsersService.name);
   constructor(private readonly usersService: UsersService ) {}
 
   @ApiResponse({ status: HttpStatus.CREATED, description: 'User created successfully.' })

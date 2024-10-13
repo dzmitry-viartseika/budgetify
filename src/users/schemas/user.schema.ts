@@ -12,6 +12,18 @@ export class User {
   password: string;
 
   @Prop()
+  userId?: string;
+
+  @Prop()
+  lastName?: string;
+
+  @Prop()
+  firstName?: string;
+
+  @Prop()
+  avatar?: string;
+
+  @Prop()
   refreshToken: string | null;
 
   @Prop({default: now()})

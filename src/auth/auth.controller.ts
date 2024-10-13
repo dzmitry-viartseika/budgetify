@@ -11,13 +11,10 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import { CustomHttpException } from '../utils/CustomHttpException';
-import { UsersService } from '../users/users.service';
 
 @ApiTags('auth')
 @Controller('auth')
 export class AuthController {
-  private logger = new Logger(UsersService.name);
   constructor(private authService: AuthService) {}
 
   @Post('signup')
