@@ -11,6 +11,8 @@ const mockCategoryRepository = {
   removeByUserIdAndCategoryId: jest.fn(),
 };
 
+const userId = 'user123';
+
 describe('CategoryService', () => {
   let categoryService: CategoryService;
   let categoryRepository: CategoryRepository;
@@ -48,7 +50,6 @@ describe('CategoryService', () => {
 
   describe('findAll', () => {
     it('should return an array of categories for a user', async () => {
-      const userId = 'user123';
       const search = 'category';
       const result = [{ name: 'Category1' }] as CreateCategoryDto[];
 
@@ -59,7 +60,6 @@ describe('CategoryService', () => {
     });
 
     it('should return an array of categories without search param', async () => {
-      const userId = 'user123';
       const result = [{ name: 'Category1' }] as CreateCategoryDto[];
 
       mockCategoryRepository.findAll.mockResolvedValue(result);
@@ -71,7 +71,6 @@ describe('CategoryService', () => {
 
   describe('update', () => {
     it('should update a category and return the updated result', async () => {
-      const userId = 'user123';
       const name = 'Category1';
       const updateCategoryDto = { name: 'Updated Category' } as UpdateCategoryDto;
 
@@ -86,7 +85,6 @@ describe('CategoryService', () => {
 
   describe('remove', () => {
     it('should remove a category and return the removed result', async () => {
-      const userId = 'user123';
       const categoryId = 'category123';
       const removedCategory = { name: 'Category1' } as CreateCategoryDto;
 
