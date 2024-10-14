@@ -22,21 +22,6 @@ export class UpdateUserDto {
   password: string;
 
   @ApiProperty({
-    description: 'Refresh token',
-    default: null,
-    required: false,
-  })
-  refreshToken?: string | null;
-
-
-  @ApiProperty({
-    description: 'Access token',
-    default: null,
-    required: false,
-  })
-  accessToken?: string | null;
-
-  @ApiProperty({
     required: false,
   })
   createdAt: Date;
