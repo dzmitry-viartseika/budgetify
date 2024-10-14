@@ -6,7 +6,7 @@ export class UserDto {
   accessToken: string;
   refreshToken: string;
 
-  constructor(user: any, tokens: { accessToken: string; refreshToken: string }) {
+  constructor(user: any, tokens: any) {
     this.id = user.id;
     this.email = user.email;
     this.createdAt = user.createdAt;
