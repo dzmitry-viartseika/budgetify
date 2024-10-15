@@ -52,7 +52,7 @@ export class CategoryRepository {
     return category;
   }
 
-  async updateByUserIdAndCategoryId(userId: string, categoryId: string, category: Partial<CreateCategoryDto>): Promise<CreateCategoryDto | null> {
+  async updateByUserIdAndCategoryId(categoryId: string, userId: string, category: Partial<CreateCategoryDto>): Promise<CreateCategoryDto | null> {
     const updatedUserCategory = this.categoryModel.findOneAndUpdate(
       { userId, _id: categoryId },
       category,
@@ -71,7 +71,7 @@ export class CategoryRepository {
   }
 
   async removeByUserIdAndCategoryId(dto: DeleteCategoryDto): Promise<any> {
-    const draftCategory = await this.categoryModel.findOneAndDelete({ userId: dto.userId, _id: dto.categoryId }).exec();
+    const draftCategory = await this.categoryModel.findOneAndDelete({ _id: dto.categoryId, userId: dto.userId }).exec();
     if (!draftCategory) {
       this.logger.error(`Category with id ${ dto.categoryId} does not exists for userId ${ dto.userId}`);
       throw new HttpException({

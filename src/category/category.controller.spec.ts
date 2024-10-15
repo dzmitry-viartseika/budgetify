@@ -3,6 +3,7 @@ import { CategoryController } from './category.controller';
 import { CategoryService } from './category.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
+import { DeleteCategoryDto } from './dto/delete-category.dto';
 
 const mockCategoryService = {
   create: jest.fn(),
@@ -61,7 +62,7 @@ describe('CategoryController', () => {
     it('should update a category', async () => {
       const userId = 'user123';
       const name = 'Category1';
-      const updateCategoryDto = { name: 'Updated Category' } as UpdateCategoryDto;
+      const updateCategoryDto = { name: 'Updated Category' };
 
       jest.spyOn(categoryService, 'update').mockResolvedValue(updateCategoryDto);
 
@@ -75,15 +76,22 @@ describe('CategoryController', () => {
   describe('remove', () => {
     it('should remove a category', async () => {
       const userId = 'user123';
-      const name = 'Category1';
-      const removedCategory = { name: 'Category1' } as CreateCategoryDto;
+      const categoryId = 'Category1';
+
+      const removedCategory: DeleteCategoryDto = {
+        categoryId: 'Category1',
+        userId: 'user123',
+      };
 
       jest.spyOn(categoryService, 'remove').mockResolvedValue(removedCategory);
 
-      const result = await categoryController.remove(userId, name);
+      const result = await categoryController.remove(categoryId, userId);
 
       expect(result).toBe(removedCategory);
-      expect(categoryService.remove).toHaveBeenCalledWith(userId, name);
+      expect(categoryService.remove).toHaveBeenCalledWith({
+        userId,
+        categoryId,
+      });
     });
   });
 });

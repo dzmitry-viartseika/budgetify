@@ -71,29 +71,30 @@ describe('CategoryService', () => {
 
   describe('update', () => {
     it('should update a category and return the updated result', async () => {
-      const name = 'Category1';
-      const updateCategoryDto = { name: 'Updated Category' } as UpdateCategoryDto;
+      const categoryId = 'categoryId';
+      const userId = 'userId';
+      const updateCategoryDto = { name: 'categoryId' };
 
       mockCategoryRepository.updateByUserIdAndCategoryId.mockResolvedValue(updateCategoryDto);
 
-      const result = await categoryService.update(userId, name, updateCategoryDto);
+      const result = await categoryService.update(categoryId, userId, updateCategoryDto as UpdateCategoryDto);
 
       expect(result).toEqual(updateCategoryDto);
-      expect(categoryRepository.updateByUserIdAndCategoryId).toHaveBeenCalledWith(userId, name, updateCategoryDto);
+      expect(categoryRepository.updateByUserIdAndCategoryId).toHaveBeenCalledWith(categoryId, userId, updateCategoryDto);
     });
   });
 
   describe('remove', () => {
     it('should remove a category and return the removed result', async () => {
       const categoryId = 'category123';
-      const removedCategory = { name: 'Category1' } as CreateCategoryDto;
+      const removedCategory = { categoryId: 'category123' };
 
       mockCategoryRepository.removeByUserIdAndCategoryId.mockResolvedValue(removedCategory);
 
-      const result = await categoryService.remove({userId: userId, categoryId: categoryId});
+      const result = await categoryService.remove({categoryId: categoryId, userId: userId,});
 
       expect(result).toEqual(removedCategory);
-      expect(categoryRepository.removeByUserIdAndCategoryId).toHaveBeenCalledWith({userId: userId, categoryId: categoryId});
+      expect(categoryRepository.removeByUserIdAndCategoryId).toHaveBeenCalledWith({ categoryId: categoryId, userId: userId});
     });
   });
 });

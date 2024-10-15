@@ -90,9 +90,9 @@ export class CategoryController {
     description: 'Internal Server Error: Something went wrong on the server.',
   })
   @ApiBearerAuth()
-  @Put(':userId/:categoryId')
-  async update(@Param('userId') userId: string, @Param('categoryId') categoryId: string, @Body() updateCategoryDto: UpdateCategoryDto): Promise<UpdateCategoryDto> {
-    return await this.categoryService.update(userId, categoryId, updateCategoryDto);
+  @Put(':categoryId/:userId')
+  async update(@Param('categoryId') categoryId: string, @Param('userId') userId: string, @Body() updateCategoryDto: UpdateCategoryDto): Promise<UpdateCategoryDto> {
+    return await this.categoryService.update(categoryId, userId, updateCategoryDto);
   }
 
   @ApiResponse({ status: HttpStatus.CREATED, description: 'Category deleted successfully.' })
@@ -111,8 +111,8 @@ export class CategoryController {
     description: 'Internal Server Error: Something went wrong on the server.',
   })
   @ApiBearerAuth()
-  @Delete(':userId/:categoryId')
-  async remove(@Param('userId') userId: string, @Param('categoryId') categoryId: string): Promise<DeleteCategoryDto> {
+  @Delete(':categoryId/:userId')
+  async remove(@Param('categoryId') categoryId: string, @Param('userId') userId: string): Promise<DeleteCategoryDto> {
     const deleteCategoryDto = {
       userId,
       categoryId: categoryId,

@@ -16,8 +16,8 @@ export class CategoryService {
     return this.categoryRepository.findAll(userId, search);
   }
 
-  async update(userId: string, categoryId: string, updateCategoryDto: UpdateCategoryDto): Promise<UpdateCategoryDto> {
-    const updatedCategory = await this.categoryRepository.updateByUserIdAndCategoryId(userId, categoryId, {name: updateCategoryDto.name});
+  async update(categoryId: string, userId: string, updateCategoryDto: UpdateCategoryDto): Promise<UpdateCategoryDto> {
+    const updatedCategory = await this.categoryRepository.updateByUserIdAndCategoryId(categoryId, userId, {name: updateCategoryDto.name});
     return updatedCategory;
   }
 

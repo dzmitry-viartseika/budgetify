@@ -67,17 +67,17 @@ describe('CategoryRepository', () => {
 
   it('should update the category and return the updated result', async () => {
     const userId = 'user123';
-    const name = 'Category1';
+    const categoryId = 'Category1';
     const updateCategoryDto: Partial<CreateCategoryDto> = { name: 'Updated Category' };
 
     (categoryModel.findOneAndUpdate as jest.Mock).mockReturnValue({ exec: jest.fn().mockResolvedValue(updateCategoryDto) });
 
 
-    const result = await categoryRepository.updateByUserIdAndName(userId, name, updateCategoryDto);
+    const result = await categoryRepository.updateByUserIdAndCategoryId(categoryId, userId, updateCategoryDto);
 
     expect(result).toEqual(updateCategoryDto);
     expect(categoryModel.findOneAndUpdate).toHaveBeenCalledWith(
-      { userId, name },
+      {  _id: categoryId, userId },
       updateCategoryDto,
       { new: true },
     );
@@ -85,16 +85,18 @@ describe('CategoryRepository', () => {
 
   it('should delete the category and return the deleted result', async () => {
     const userId = 'user123';
-    const name = 'Category1';
-    const deletedCategory: CreateCategoryDto = { userId, name };
+    const categoryId = 'Category1';
+    const deletedCategory = {categoryId, userId };
 
     (categoryModel.findOneAndDelete as jest.Mock).mockReturnValue({
       exec: jest.fn().mockResolvedValue(deletedCategory),
     });
 
-    const result = await categoryRepository.removeByUserIdAndName(userId, name);
+    const result = await categoryRepository.removeByUserIdAndCategoryId({
+      categoryId, userId
+    });
 
     expect(result).toEqual(deletedCategory);
-    expect(categoryModel.findOneAndDelete).toHaveBeenCalledWith({ userId, name });
+    expect(categoryModel.findOneAndDelete).toHaveBeenCalledWith({ _id: categoryId, userId});
   });
 });
