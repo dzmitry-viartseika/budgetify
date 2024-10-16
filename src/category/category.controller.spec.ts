@@ -2,7 +2,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { CategoryController } from './category.controller';
 import { CategoryService } from './category.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
-import { UpdateCategoryDto } from './dto/update-category.dto';
 import { DeleteCategoryDto } from './dto/delete-category.dto';
 
 const mockCategoryService = {
@@ -10,6 +9,10 @@ const mockCategoryService = {
   findAll: jest.fn(),
   update: jest.fn(),
   remove: jest.fn(),
+};
+
+const USER = {
+  userId: 'user123'
 };
 
 describe('CategoryController', () => {
@@ -39,9 +42,9 @@ describe('CategoryController', () => {
     it('should call CategoryService create method with correct data', async () => {
       const createCategoryDto = { name: 'New Category' } as CreateCategoryDto;
 
-      await categoryController.create(createCategoryDto);
+      await categoryController.create(USER, createCategoryDto);
 
-      expect(categoryService.create).toHaveBeenCalledWith(createCategoryDto);
+      expect(categoryService.create).toHaveBeenCalledWith(USER, createCategoryDto);
     });
   });
 
@@ -75,22 +78,21 @@ describe('CategoryController', () => {
 
   describe('remove', () => {
     it('should remove a category', async () => {
-      const userId = 'user123';
       const categoryId = 'Category1';
 
-      const removedCategory: DeleteCategoryDto = {
+      const removedCategory = {
         categoryId: 'Category1',
-        userId: 'user123',
+        user: USER,
       };
 
       jest.spyOn(categoryService, 'remove').mockResolvedValue(removedCategory);
 
-      const result = await categoryController.remove(categoryId, userId);
+      const result = await categoryController.remove(categoryId, USER);
 
-      expect(result).toBe(removedCategory);
-      expect(categoryService.remove).toHaveBeenCalledWith({
-        userId,
-        categoryId,
+      expect(result).toEqual(removedCategory);
+      expect(categoryService.remove).toHaveBeenCalledWith(USER, {
+        categoryId: categoryId,
+        user: USER,
       });
     });
   });

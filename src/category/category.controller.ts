@@ -22,6 +22,7 @@ import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { DeleteCategoryDto } from './dto/delete-category.dto';
+import { CurrentUser } from '../decorators/current-user.decorator';
 
 @ApiTags('categories')
 @Controller('categories')
@@ -49,8 +50,8 @@ export class CategoryController {
   })
   @ApiBearerAuth()
   @Post()
-  async create(@Body() createCategoryDto: CreateCategoryDto) {
-    return this.categoryService.create(createCategoryDto);
+  async create(@CurrentUser() user, @Body() createCategoryDto: CreateCategoryDto) {
+    return this.categoryService.create(user, createCategoryDto);
   }
 
   @ApiResponse({ status: HttpStatus.CREATED, description: 'Categories fetched successfully.' })
@@ -69,9 +70,9 @@ export class CategoryController {
     description: 'Internal Server Error: Something went wrong on the server.',
   })
   @ApiBearerAuth()
-  @Get(':userId')
-  async findAll(@Param('userId') userId: string, @Query('search') search?: string): Promise<CreateCategoryDto[]> {
-    return this.categoryService.findAll(userId, search);
+  @Get()
+  async findAll(@CurrentUser() user, @Query('search') search?: string): Promise<CreateCategoryDto[]> {
+    return this.categoryService.findAll(user, search);
   }
 
   @ApiResponse({ status: HttpStatus.CREATED, description: 'Category updated successfully.' })
@@ -90,9 +91,9 @@ export class CategoryController {
     description: 'Internal Server Error: Something went wrong on the server.',
   })
   @ApiBearerAuth()
-  @Put(':categoryId/:userId')
-  async update(@Param('categoryId') categoryId: string, @Param('userId') userId: string, @Body() updateCategoryDto: UpdateCategoryDto): Promise<UpdateCategoryDto> {
-    return await this.categoryService.update(categoryId, userId, updateCategoryDto);
+  @Put(':categoryId')
+  async update(@Param('categoryId') categoryId: string, @CurrentUser() user, @Body() updateCategoryDto: UpdateCategoryDto): Promise<UpdateCategoryDto> {
+    return await this.categoryService.update(categoryId, user, updateCategoryDto);
   }
 
   @ApiResponse({ status: HttpStatus.CREATED, description: 'Category deleted successfully.' })
@@ -111,12 +112,12 @@ export class CategoryController {
     description: 'Internal Server Error: Something went wrong on the server.',
   })
   @ApiBearerAuth()
-  @Delete(':categoryId/:userId')
-  async remove(@Param('categoryId') categoryId: string, @Param('userId') userId: string): Promise<DeleteCategoryDto> {
+  @Delete(':categoryId')
+  async remove(@Param('categoryId') categoryId: string, @CurrentUser() user): Promise<DeleteCategoryDto> {
     const deleteCategoryDto = {
-      userId,
+      user,
       categoryId: categoryId,
     }
-    return await this.categoryService.remove(deleteCategoryDto);
+    return await this.categoryService.remove(user, deleteCategoryDto);
   }
 }

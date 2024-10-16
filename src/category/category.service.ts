@@ -8,21 +8,21 @@ import { DeleteCategoryDto } from './dto/delete-category.dto';
 export class CategoryService {
   constructor(private readonly categoryRepository: CategoryRepository) {}
 
-  async create(createCategoryDto: CreateCategoryDto): Promise<CreateCategoryDto> {
-    return this.categoryRepository.create(createCategoryDto as CreateCategoryDto);
+  async create(user, createCategoryDto: CreateCategoryDto): Promise<CreateCategoryDto> {
+    return this.categoryRepository.create(user, createCategoryDto);
   }
 
-  async findAll(userId: string, search?: string): Promise<CreateCategoryDto[]> {
-    return this.categoryRepository.findAll(userId, search);
+  async findAll(user, search?: string): Promise<CreateCategoryDto[]> {
+    return this.categoryRepository.findAll(user, search);
   }
 
-  async update(categoryId: string, userId: string, updateCategoryDto: UpdateCategoryDto): Promise<UpdateCategoryDto> {
-    const updatedCategory = await this.categoryRepository.updateByUserIdAndCategoryId(categoryId, userId, {name: updateCategoryDto.name});
+  async update(categoryId: string, user, updateCategoryDto: UpdateCategoryDto): Promise<UpdateCategoryDto> {
+    const updatedCategory = await this.categoryRepository.updateByUserIdAndCategoryId(categoryId, user, {name: updateCategoryDto.name});
     return updatedCategory;
   }
 
-  async remove(deleteCategoryDto: DeleteCategoryDto): Promise<DeleteCategoryDto> {
-    const deletedCategory = await this.categoryRepository.removeByUserIdAndCategoryId(deleteCategoryDto);
+  async remove(user, deleteCategoryDto: DeleteCategoryDto): Promise<DeleteCategoryDto> {
+    const deletedCategory = await this.categoryRepository.removeByUserIdAndCategoryId(user, deleteCategoryDto);
     return deletedCategory;
   }
 }

@@ -12,9 +12,6 @@ export class User {
   password: string;
 
   @Prop()
-  userId?: string;
-
-  @Prop()
   lastName?: string;
 
   @Prop()
@@ -22,9 +19,6 @@ export class User {
 
   @Prop()
   avatar?: string;
-
-  @Prop()
-  refreshToken: string | null;
 
   @Prop({default: now()})
   createdAt: Date;

@@ -13,23 +13,26 @@ export class CategoryRepository {
     @InjectModel(Category.name) private categoryModel: Model<CategoryDocument>,
   ) {}
 
-  async create(category: CreateCategoryDto): Promise<CreateCategoryDto> {
-    const existingCategory = await this.categoryModel.findOne({ userId: category.userId, name: category.name }).exec();
+  async create(user, category: CreateCategoryDto): Promise<CreateCategoryDto> {
+    const existingCategory = await this.categoryModel.findOne({ userId: user.userId, name: category.name }).exec();
     if (existingCategory) {
       this.logger.error(`Category with name ${existingCategory.name} already exists`);
       throw new HttpException({
-        status: HttpStatus.FORBIDDEN,
+        status: HttpStatus.CONFLICT,
         message: 'Category with name already exists',
         path: request.url,
-      }, HttpStatus.FORBIDDEN);
+      }, HttpStatus.CONFLICT);
     }
-    const createdCategory = new this.categoryModel(category);
+    const createdCategory = new this.categoryModel({
+      ...category,
+      userId: user.userId,
+    });
     this.logger.verbose(`User created category ${Category.name} successfully`);
     return createdCategory.save();
   }
 
-  async findAll(userId: string, search?: string): Promise<CreateCategoryDto[]> {
-    const query = { userId };
+  async findAll(user, search?: string): Promise<CreateCategoryDto[]> {
+    const query = { userId: user.userId };
     if (search) {
       query['name'] = { $regex: search, $options: 'i' };
     }
@@ -38,28 +41,14 @@ export class CategoryRepository {
     return userCategories;
   }
 
-  async findById(id: string): Promise<CreateCategoryDto> {
-    const category = this.categoryModel.findById(id).exec()
-    if (!category) {
-      this.logger.error(`Category with id ${id} does not exists`);
-      throw new HttpException({
-        status: HttpStatus.NOT_FOUND,
-        message: 'Category with id does not exists',
-        path: request.url,
-      }, HttpStatus.NOT_FOUND);
-    }
-    this.logger.verbose(`User fetched category ${category} successfully`);
-    return category;
-  }
-
-  async updateByUserIdAndCategoryId(categoryId: string, userId: string, category: Partial<CreateCategoryDto>): Promise<CreateCategoryDto | null> {
+  async updateByUserIdAndCategoryId(categoryId: string, user, category: Partial<CreateCategoryDto>): Promise<CreateCategoryDto | null> {
     const updatedUserCategory = this.categoryModel.findOneAndUpdate(
-      { userId, _id: categoryId },
+      { userId: user.userId, _id: categoryId },
       category,
       { new: true }
     ).exec();
     if (!updatedUserCategory) {
-      this.logger.error(`Category with caltegoryId ${categoryId} does not exists for userId ${userId}`);
+      this.logger.error(`Category with caltegoryId ${categoryId} does not exists for userId ${user.userId}`);
       throw new HttpException({
         status: HttpStatus.NOT_FOUND,
         message: 'Category with name does not exists for current userId',
@@ -70,10 +59,10 @@ export class CategoryRepository {
     return updatedUserCategory;
   }
 
-  async removeByUserIdAndCategoryId(dto: DeleteCategoryDto): Promise<any> {
-    const draftCategory = await this.categoryModel.findOneAndDelete({ _id: dto.categoryId, userId: dto.userId }).exec();
+  async removeByUserIdAndCategoryId(user, dto: DeleteCategoryDto): Promise<any> {
+    const draftCategory = await this.categoryModel.findOneAndDelete({ _id: dto.categoryId, userId: user.userId }).exec();
     if (!draftCategory) {
-      this.logger.error(`Category with id ${ dto.categoryId} does not exists for userId ${ dto.userId}`);
+      this.logger.error(`Category with id ${ dto.categoryId} does not exists for userId ${ user.userId}`);
       throw new HttpException({
         status: HttpStatus.NOT_FOUND,
         message: 'Category with name does not exists for current userId',

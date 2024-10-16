@@ -12,15 +12,6 @@ export class CreateCategoryDto {
   readonly name: string;
 
   @ApiProperty({
-    description: 'User id',
-    required: true,
-    example: '670ac74d68ed7906ff8895fd',
-  })
-  @IsString()
-  @IsNotEmpty()
-  readonly userId: string;
-
-  @ApiProperty({
     description: 'Category type, either "Expense" or "Income"',
     required: false,
     enum: ['Expense', 'Income'],

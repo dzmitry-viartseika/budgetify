@@ -11,7 +11,9 @@ const mockCategoryRepository = {
   removeByUserIdAndCategoryId: jest.fn(),
 };
 
-const userId = 'user123';
+const USER = {
+  userId: 'user123'
+};
 
 describe('CategoryService', () => {
   let categoryService: CategoryService;
@@ -41,10 +43,10 @@ describe('CategoryService', () => {
       const createCategoryDto = { name: 'New Category' } as CreateCategoryDto;
       mockCategoryRepository.create.mockResolvedValue(createCategoryDto);
 
-      const result = await categoryService.create(createCategoryDto);
+      const result = await categoryService.create(USER, createCategoryDto);
 
       expect(result).toEqual(createCategoryDto);
-      expect(categoryRepository.create).toHaveBeenCalledWith(createCategoryDto);
+      expect(categoryRepository.create).toHaveBeenCalledWith(USER, createCategoryDto);
     });
   });
 
@@ -55,8 +57,8 @@ describe('CategoryService', () => {
 
       mockCategoryRepository.findAll.mockResolvedValue(result);
 
-      expect(await categoryService.findAll(userId, search)).toBe(result);
-      expect(categoryRepository.findAll).toHaveBeenCalledWith(userId, search);
+      expect(await categoryService.findAll(USER, search)).toBe(result);
+      expect(categoryRepository.findAll).toHaveBeenCalledWith(USER, search);
     });
 
     it('should return an array of categories without search param', async () => {
@@ -64,23 +66,22 @@ describe('CategoryService', () => {
 
       mockCategoryRepository.findAll.mockResolvedValue(result);
 
-      expect(await categoryService.findAll(userId)).toBe(result);
-      expect(categoryRepository.findAll).toHaveBeenCalledWith(userId, undefined);
+      expect(await categoryService.findAll(USER)).toBe(result);
+      expect(categoryRepository.findAll).toHaveBeenCalledWith(USER, undefined);
     });
   });
 
   describe('update', () => {
     it('should update a category and return the updated result', async () => {
       const categoryId = 'categoryId';
-      const userId = 'userId';
-      const updateCategoryDto = { name: 'categoryId' };
+      const updateCategoryDto = { name: 'Updated Category' };
 
       mockCategoryRepository.updateByUserIdAndCategoryId.mockResolvedValue(updateCategoryDto);
 
-      const result = await categoryService.update(categoryId, userId, updateCategoryDto as UpdateCategoryDto);
+      const result = await categoryService.update(categoryId, USER.userId, updateCategoryDto as UpdateCategoryDto);
 
       expect(result).toEqual(updateCategoryDto);
-      expect(categoryRepository.updateByUserIdAndCategoryId).toHaveBeenCalledWith(categoryId, userId, updateCategoryDto);
+      expect(categoryRepository.updateByUserIdAndCategoryId).toHaveBeenCalledWith(categoryId, USER.userId, updateCategoryDto);
     });
   });
 
@@ -91,10 +92,10 @@ describe('CategoryService', () => {
 
       mockCategoryRepository.removeByUserIdAndCategoryId.mockResolvedValue(removedCategory);
 
-      const result = await categoryService.remove({categoryId: categoryId, userId: userId,});
+      const result = await categoryService.remove(USER.userId, { categoryId: categoryId });
 
       expect(result).toEqual(removedCategory);
-      expect(categoryRepository.removeByUserIdAndCategoryId).toHaveBeenCalledWith({ categoryId: categoryId, userId: userId});
+      expect(categoryRepository.removeByUserIdAndCategoryId).toHaveBeenCalledWith(USER.userId, { categoryId: categoryId });
     });
   });
 });

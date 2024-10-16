@@ -9,11 +9,10 @@ const mockCategoryModel = () => ({
   findOne: jest.fn(),
   create: jest.fn(),
   find: jest.fn(),
-  findById: jest.fn(),
   findOneAndUpdate: jest.fn(),
   findOneAndDelete: jest.fn(),
-  save: jest.fn(),
   exec: jest.fn(),
+  save: jest.fn(),
 });
 
 describe('CategoryRepository', () => {
@@ -42,27 +41,16 @@ describe('CategoryRepository', () => {
   it('should return an array of categories based on search criteria', async () => {
     const userId = 'user123';
     const search = 'cat';
-    const categories = [{ userId, name: 'Category1' }] as CreateCategoryDto[];
+    const categories = [{ name: 'Category1' }] as CreateCategoryDto[];
 
-    (categoryModel.find as jest.Mock).mockReturnValue({ exec: jest.fn().mockResolvedValue(categories) });
+    (categoryModel.find as jest.Mock).mockReturnValue({
+      exec: jest.fn().mockResolvedValue(categories),
+    });
 
-    const result = await categoryRepository.findAll(userId, search);
+    const result = await categoryRepository.findAll({ userId }, search);
 
     expect(result).toEqual(categories);
     expect(categoryModel.find).toHaveBeenCalledWith({ userId, name: { $regex: search, $options: 'i' } });
-  });
-
-  it('should return the category if it exists', async () => {
-    const categoryId = 'category123';
-    const category = { userId: 'user123', name: 'Category1' } as CreateCategoryDto;
-
-    (categoryModel.findById as jest.Mock).mockReturnValue({ exec: jest.fn().mockResolvedValue(category) });
-
-
-    const result = await categoryRepository.findById(categoryId);
-
-    expect(result).toEqual(category);
-    expect(categoryModel.findById).toHaveBeenCalledWith(categoryId);
   });
 
   it('should update the category and return the updated result', async () => {
@@ -70,14 +58,15 @@ describe('CategoryRepository', () => {
     const categoryId = 'Category1';
     const updateCategoryDto: Partial<CreateCategoryDto> = { name: 'Updated Category' };
 
-    (categoryModel.findOneAndUpdate as jest.Mock).mockReturnValue({ exec: jest.fn().mockResolvedValue(updateCategoryDto) });
+    (categoryModel.findOneAndUpdate as jest.Mock).mockReturnValue({
+      exec: jest.fn().mockResolvedValue(updateCategoryDto),
+    });
 
-
-    const result = await categoryRepository.updateByUserIdAndCategoryId(categoryId, userId, updateCategoryDto);
+    const result = await categoryRepository.updateByUserIdAndCategoryId(categoryId, { userId }, updateCategoryDto);
 
     expect(result).toEqual(updateCategoryDto);
     expect(categoryModel.findOneAndUpdate).toHaveBeenCalledWith(
-      {  _id: categoryId, userId },
+      { _id: categoryId, userId },
       updateCategoryDto,
       { new: true },
     );
@@ -86,17 +75,15 @@ describe('CategoryRepository', () => {
   it('should delete the category and return the deleted result', async () => {
     const userId = 'user123';
     const categoryId = 'Category1';
-    const deletedCategory = {categoryId, userId };
+    const deletedCategory = { categoryId, userId };
 
     (categoryModel.findOneAndDelete as jest.Mock).mockReturnValue({
       exec: jest.fn().mockResolvedValue(deletedCategory),
     });
 
-    const result = await categoryRepository.removeByUserIdAndCategoryId({
-      categoryId, userId
-    });
+    const result = await categoryRepository.removeByUserIdAndCategoryId({ userId }, { categoryId });
 
     expect(result).toEqual(deletedCategory);
-    expect(categoryModel.findOneAndDelete).toHaveBeenCalledWith({ _id: categoryId, userId});
+    expect(categoryModel.findOneAndDelete).toHaveBeenCalledWith({ _id: categoryId, userId });
   });
 });
