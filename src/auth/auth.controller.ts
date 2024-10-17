@@ -1,7 +1,7 @@
 import { Body, Controller, Get, HttpCode, HttpStatus, Logger, Post, Req, UseGuards } from '@nestjs/common';
 import { Request } from 'express';
-import { AccessTokenGuard } from '../guards/accessToken.guard';
-import { RefreshTokenGuard } from '../guards/refreshToken.guard';
+import { AccessTokenGuard } from '../guards/access-token.guard';
+import { RefreshTokenGuard } from '../guards/refresh-token.guard';
 import { AuthService } from './auth.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import {

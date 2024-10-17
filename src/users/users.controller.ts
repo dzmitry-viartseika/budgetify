@@ -17,7 +17,7 @@ import {
   ApiForbiddenResponse, ApiInternalServerErrorResponse, ApiNotFoundResponse, ApiOkResponse, ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { AccessTokenGuard } from '../guards/accessToken.guard';
+import { AccessTokenGuard } from '../guards/access-token.guard';
 
 @ApiTags('users')
 @Controller('users')
