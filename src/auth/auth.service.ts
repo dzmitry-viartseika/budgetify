@@ -124,14 +124,14 @@ export class AuthService {
     return hash;
   }
 
-  async getTokens(userId: string, username: string) {
+  async getTokens(userId: string, email: string) {
     this.logger.log(`Generating tokens for user ID: ${userId}`);
 
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(
         {
-          userId: userId,
-          username,
+          id: userId,
+          email,
         },
         {
           secret: process.env.JWT_ACCESS_SECRET,
@@ -140,8 +140,8 @@ export class AuthService {
       ),
       this.jwtService.signAsync(
         {
-          userId: userId,
-          username,
+          id: userId,
+          email,
         },
         {
           secret: process.env.JWT_REFRESH_SECRET,
