@@ -2,8 +2,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
-import { AccessTokenGuard } from '../guards/accessToken.guard';
-import { RefreshTokenGuard } from '../guards/refreshToken.guard';
+import { AccessTokenGuard } from '../guards/access-token.guard';
+import { RefreshTokenGuard } from '../guards/refresh-token.guard';
 
 describe('AuthController', () => {
   let authController: AuthController;

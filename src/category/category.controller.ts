@@ -1,5 +1,5 @@
 import { CategoryService } from './category.service';
-import { AccessTokenGuard } from '../guards/accessToken.guard';
+import { AccessTokenGuard } from '../guards/access-token.guard';
 import {
   ApiBadRequestResponse,
   ApiBearerAuth, ApiConflictResponse, ApiCreatedResponse, ApiForbiddenResponse,
