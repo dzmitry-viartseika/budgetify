@@ -16,11 +16,13 @@ async function bootstrap() {
   app.setGlobalPrefix(API_VERSION);
   app.useGlobalPipes();
   app.useGlobalFilters(new HttpExceptionFilter());
-  app.useGlobalPipes(new ValidationPipe({
-    whitelist: true,
-    transform: true,
-    forbidNonWhitelisted: true
-  }));
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      transform: true,
+      forbidNonWhitelisted: true,
+    })
+  );
   const logger = new Logger();
   const config = new DocumentBuilder()
     .setTitle('Budgetify swagger')

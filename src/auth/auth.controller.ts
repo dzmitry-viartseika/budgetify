@@ -5,9 +5,11 @@ import { RefreshTokenGuard } from '../guards/refresh-token.guard';
 import { AuthService } from './auth.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import {
-  ApiBadRequestResponse, ApiBearerAuth,
+  ApiBadRequestResponse,
+  ApiBearerAuth,
   ApiCreatedResponse,
-  ApiInternalServerErrorResponse, ApiOkResponse,
+  ApiInternalServerErrorResponse,
+  ApiOkResponse,
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';

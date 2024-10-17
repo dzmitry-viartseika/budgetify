@@ -2,22 +2,15 @@ import { CategoryService } from './category.service';
 import { AccessTokenGuard } from '../guards/access-token.guard';
 import {
   ApiBadRequestResponse,
-  ApiBearerAuth, ApiConflictResponse, ApiCreatedResponse, ApiForbiddenResponse,
+  ApiBearerAuth,
+  ApiConflictResponse,
+  ApiCreatedResponse,
+  ApiForbiddenResponse,
   ApiInternalServerErrorResponse,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import {
-  Body,
-  Controller,
-  Delete,
-  Get, HttpStatus,
-  Param,
-  Post,
-  Put,
-  Query,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { CreateUserDto } from '../users/dto/create-user.dto';
@@ -92,7 +85,11 @@ export class CategoryController {
   })
   @ApiBearerAuth()
   @Put(':categoryId')
-  async update(@Param('categoryId') categoryId: string, @CurrentUser() user, @Body() updateCategoryDto: UpdateCategoryDto): Promise<UpdateCategoryDto> {
+  async update(
+    @Param('categoryId') categoryId: string,
+    @CurrentUser() user,
+    @Body() updateCategoryDto: UpdateCategoryDto
+  ): Promise<UpdateCategoryDto> {
     return await this.categoryService.update(categoryId, user, updateCategoryDto);
   }
 
@@ -117,7 +114,7 @@ export class CategoryController {
     const deleteCategoryDto = {
       user,
       categoryId: categoryId,
-    }
+    };
     return await this.categoryService.remove(user, deleteCategoryDto);
   }
 }

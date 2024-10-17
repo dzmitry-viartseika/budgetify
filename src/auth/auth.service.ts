@@ -1,7 +1,4 @@
-import {
-  HttpException, HttpStatus,
-  Injectable, Logger,
-} from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
@@ -19,22 +16,23 @@ export class AuthService {
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
-    private tokensService: TokensService,
+    private tokensService: TokensService
   ) {}
   async signUp(createUserDto: CreateUserDto): Promise<any> {
     this.logger.verbose(`Creating user with email address: "${createUserDto.email}"`);
 
-    const userExists = await this.usersService.findByEmail(
-      createUserDto.email,
-    );
+    const userExists = await this.usersService.findByEmail(createUserDto.email);
 
     if (userExists) {
       this.logger.error(`User with email ${createUserDto.email} already exists`);
-      throw new HttpException({
-        status: HttpStatus.BAD_REQUEST,
-        message: 'User already exists',
-        path: request.url,
-      }, HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        {
+          status: HttpStatus.BAD_REQUEST,
+          message: 'User already exists',
+          path: request.url,
+        },
+        HttpStatus.BAD_REQUEST
+      );
     }
 
     const hash = await this.hasData(createUserDto.password);
@@ -46,7 +44,6 @@ export class AuthService {
     this.logger.verbose(`User created with ID: ${newUser.id} and email address ${newUser.email}`);
     this.logger.verbose(`Creating user with email address: "${newUser.email}"`);
 
-
     const tokens = await this.getTokens(newUser.id, newUser.email);
     await this.tokensService.create(newUser.id, tokens.refreshToken);
     return tokens;
@@ -55,20 +52,26 @@ export class AuthService {
   async signIn(data: LoginAuthDto) {
     const user = await this.usersService.findByEmail(data.email);
     if (!user) {
-      throw new HttpException({
-        status: HttpStatus.UNAUTHORIZED,
-        message: 'Invalid email or password',
-        path: request.url,
-      }, HttpStatus.UNAUTHORIZED);
+      throw new HttpException(
+        {
+          status: HttpStatus.UNAUTHORIZED,
+          message: 'Invalid email or password',
+          path: request.url,
+        },
+        HttpStatus.UNAUTHORIZED
+      );
     }
     this.logger.verbose(`User logging in with ID: ${user.id} and email address ${user.email}`);
     const passwordMatches = await bcrypt.compare(data.password, user.password);
     if (!passwordMatches) {
-      throw new HttpException({
-        status: HttpStatus.UNAUTHORIZED,
-        message: 'Password or email is incorrect',
-        path: request.url,
-      }, HttpStatus.UNAUTHORIZED);
+      throw new HttpException(
+        {
+          status: HttpStatus.UNAUTHORIZED,
+          message: 'Password or email is incorrect',
+          path: request.url,
+        },
+        HttpStatus.UNAUTHORIZED
+      );
     }
     const tokens = await this.getTokens(user.id, user.email);
     await this.tokensService.update(user.id, tokens.refreshToken);
@@ -87,27 +90,36 @@ export class AuthService {
     const storedToken = await this.tokensService.findByUserId(id);
     if (!storedToken) {
       this.logger.error(`Refresh token not found for user ID: ${id}`);
-      throw new HttpException({
-        status: HttpStatus.FORBIDDEN,
-        message: 'Access Denied: Refresh token not found',
-      }, HttpStatus.FORBIDDEN);
+      throw new HttpException(
+        {
+          status: HttpStatus.FORBIDDEN,
+          message: 'Access Denied: Refresh token not found',
+        },
+        HttpStatus.FORBIDDEN
+      );
     }
 
     const refreshTokenMatches = await bcrypt.compare(refreshToken, storedToken.refreshToken);
     if (!refreshTokenMatches) {
       this.logger.error(`Invalid refresh token for user ID: ${id}`);
-      throw new HttpException({
-        status: HttpStatus.FORBIDDEN,
-        message: 'Access Denied: Invalid refresh token',
-      }, HttpStatus.FORBIDDEN);
+      throw new HttpException(
+        {
+          status: HttpStatus.FORBIDDEN,
+          message: 'Access Denied: Invalid refresh token',
+        },
+        HttpStatus.FORBIDDEN
+      );
     }
 
     const user = await this.usersService.findById(id);
     if (!user) {
-      throw new HttpException({
-        status: HttpStatus.NOT_FOUND,
-        message: 'User not found',
-      }, HttpStatus.NOT_FOUND);
+      throw new HttpException(
+        {
+          status: HttpStatus.NOT_FOUND,
+          message: 'User not found',
+        },
+        HttpStatus.NOT_FOUND
+      );
     }
 
     const tokens = await this.getTokens(id, user.email);
@@ -136,7 +148,7 @@ export class AuthService {
         {
           secret: process.env.JWT_ACCESS_SECRET,
           expiresIn: '15m',
-        },
+        }
       ),
       this.jwtService.signAsync(
         {
@@ -146,7 +158,7 @@ export class AuthService {
         {
           secret: process.env.JWT_REFRESH_SECRET,
           expiresIn: '7d',
-        },
+        }
       ),
     ]);
 

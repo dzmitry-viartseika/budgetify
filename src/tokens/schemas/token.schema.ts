@@ -13,10 +13,10 @@ export class Token extends Document {
   @Prop({ required: true })
   refreshToken: string;
 
-  @Prop({default: now()})
+  @Prop({ default: now() })
   createdAt: Date;
 
-  @Prop({default: now()})
+  @Prop({ default: now() })
   updatedAt: Date;
 }
 

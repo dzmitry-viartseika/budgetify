@@ -8,7 +8,14 @@ import { TokensModule } from './tokens/tokens.module';
 import { CategoryModule } from './category/category.module';
 
 @Module({
-  imports: [ConfigModule.forRoot({ isGlobal: true }), MongooseModule.forRoot(process.env.DB_URL), UsersModule, AuthModule, TokensModule, CategoryModule],
+  imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
+    MongooseModule.forRoot(process.env.DB_URL),
+    UsersModule,
+    AuthModule,
+    TokensModule,
+    CategoryModule,
+  ],
   controllers: [],
   providers: [AppService],
 })

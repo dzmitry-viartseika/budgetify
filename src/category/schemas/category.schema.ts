@@ -17,10 +17,10 @@ export class Category extends Document {
   @Prop({ required: true, enum: CategoryTypeEnum, default: CategoryTypeEnum.EXPENSE })
   type: CategoryTypeEnum;
 
-  @Prop({default: now()})
+  @Prop({ default: now() })
   createdAt: Date;
 
-  @Prop({default: now()})
+  @Prop({ default: now() })
   updatedAt: Date;
 }
 

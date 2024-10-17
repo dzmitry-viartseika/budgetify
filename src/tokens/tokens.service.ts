@@ -6,9 +6,7 @@ import { TokenDocument } from './schemas/token.schema';
 
 @Injectable()
 export class TokensService {
-  constructor(
-    @InjectModel('Token') private tokenModel: Model<TokenDocument>,
-  ) {}
+  constructor(@InjectModel('Token') private tokenModel: Model<TokenDocument>) {}
 
   async create(userId: string, refreshToken: string): Promise<void> {
     const hashedRefreshToken = await bcrypt.hash(refreshToken, 10);
@@ -17,11 +15,7 @@ export class TokensService {
 
   async update(userId: string, refreshToken: string): Promise<void> {
     const hashedRefreshToken = await bcrypt.hash(refreshToken, 10);
-    await this.tokenModel.updateOne(
-      { userId },
-      { refreshToken: hashedRefreshToken },
-      { upsert: true },
-    );
+    await this.tokenModel.updateOne({ userId }, { refreshToken: hashedRefreshToken }, { upsert: true });
   }
 
   async findByUserId(userId: string): Promise<TokenDocument | null> {

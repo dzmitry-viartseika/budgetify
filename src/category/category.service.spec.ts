@@ -12,7 +12,7 @@ const mockCategoryRepository = {
 };
 
 const USER = {
-  userId: 'user123'
+  userId: 'user123',
 };
 
 describe('CategoryService', () => {
@@ -81,7 +81,11 @@ describe('CategoryService', () => {
       const result = await categoryService.update(categoryId, USER.userId, updateCategoryDto as UpdateCategoryDto);
 
       expect(result).toEqual(updateCategoryDto);
-      expect(categoryRepository.updateByUserIdAndCategoryId).toHaveBeenCalledWith(categoryId, USER.userId, updateCategoryDto);
+      expect(categoryRepository.updateByUserIdAndCategoryId).toHaveBeenCalledWith(
+        categoryId,
+        USER.userId,
+        updateCategoryDto
+      );
     });
   });
 
@@ -95,7 +99,9 @@ describe('CategoryService', () => {
       const result = await categoryService.remove(USER.userId, { categoryId: categoryId });
 
       expect(result).toEqual(removedCategory);
-      expect(categoryRepository.removeByUserIdAndCategoryId).toHaveBeenCalledWith(USER.userId, { categoryId: categoryId });
+      expect(categoryRepository.removeByUserIdAndCategoryId).toHaveBeenCalledWith(USER.userId, {
+        categoryId: categoryId,
+      });
     });
   });
 });

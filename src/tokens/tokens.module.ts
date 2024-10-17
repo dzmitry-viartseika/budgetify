@@ -4,9 +4,7 @@ import { TokensService } from './tokens.service';
 import { TokenSchema } from './schemas/token.schema';
 
 @Module({
-  imports: [
-    MongooseModule.forFeature([{ name: 'Token', schema: TokenSchema }]),
-  ],
+  imports: [MongooseModule.forFeature([{ name: 'Token', schema: TokenSchema }])],
   providers: [TokensService],
   exports: [TokensService],
 })
