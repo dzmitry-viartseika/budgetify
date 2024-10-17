@@ -17,7 +17,9 @@ export class CategoryService {
   }
 
   async update(categoryId: string, user, updateCategoryDto: UpdateCategoryDto): Promise<UpdateCategoryDto> {
-    const updatedCategory = await this.categoryRepository.updateByUserIdAndCategoryId(categoryId, user, {name: updateCategoryDto.name});
+    const updatedCategory = await this.categoryRepository.updateByUserIdAndCategoryId(categoryId, user, {
+      name: updateCategoryDto.name,
+    });
     return updatedCategory;
   }
 

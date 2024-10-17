@@ -5,9 +5,11 @@ import { RefreshTokenGuard } from '../guards/refresh-token.guard';
 import { AuthService } from './auth.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import {
-  ApiBadRequestResponse, ApiBearerAuth,
+  ApiBadRequestResponse,
+  ApiBearerAuth,
   ApiCreatedResponse,
-  ApiInternalServerErrorResponse, ApiOkResponse,
+  ApiInternalServerErrorResponse,
+  ApiOkResponse,
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
@@ -82,8 +84,8 @@ export class AuthController {
   })
   @ApiBearerAuth()
   refreshTokens(@Req() req: Request) {
-    const userId = req.user['userId'];
+    const id = req.user['id'];
     const refreshToken = req.user['refreshToken'];
-    return this.authService.refreshTokens(userId, refreshToken);
+    return this.authService.refreshTokens(id, refreshToken);
   }
 }

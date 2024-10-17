@@ -44,7 +44,6 @@ describe('UsersService', () => {
       email: 'test@email.com',
     };
 
-
     jest.spyOn(mockUserRepository, 'create').mockReturnValue(DUMMY_USER);
 
     const result = await service.create(createUserDto);
@@ -55,12 +54,12 @@ describe('UsersService', () => {
     expect(result).toEqual(DUMMY_USER);
   });
 
-  it('should return exist user', async() => {
+  it('should return exist user', async () => {
     jest.spyOn(mockUserRepository, 'findByEmail').mockReturnValue(DUMMY_USER);
     const result = await service.findByEmail(DUMMY_USER.email);
     expect(result).toEqual(DUMMY_USER);
     expect(mockUserRepository.findByEmail).toBeCalled();
-  })
+  });
 
   it('should return list of users', async () => {
     const USERS = [DUMMY_USER];
@@ -88,12 +87,12 @@ describe('UsersService', () => {
     } as UpdateUserDto;
 
     jest.spyOn(mockUserRepository, 'update').mockReturnValue(DUMMY_USER);
-     const result = await service.update(DUMMY_USER.id, updateUserDto);
+    const result = await service.update(DUMMY_USER.id, updateUserDto);
 
     expect(result).toEqual(DUMMY_USER);
     expect(mockUserRepository.update).toBeCalled();
     expect(mockUserRepository.update).toBeCalledWith(DUMMY_USER.id, updateUserDto);
-  })
+  });
 
   it('should find current user by id', async () => {
     jest.spyOn(mockUserRepository, 'remove').mockReturnValue(DUMMY_USER);

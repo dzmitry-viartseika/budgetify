@@ -65,11 +65,9 @@ describe('CategoryRepository', () => {
     const result = await categoryRepository.updateByUserIdAndCategoryId(categoryId, { userId }, updateCategoryDto);
 
     expect(result).toEqual(updateCategoryDto);
-    expect(categoryModel.findOneAndUpdate).toHaveBeenCalledWith(
-      { _id: categoryId, userId },
-      updateCategoryDto,
-      { new: true },
-    );
+    expect(categoryModel.findOneAndUpdate).toHaveBeenCalledWith({ _id: categoryId, userId }, updateCategoryDto, {
+      new: true,
+    });
   });
 
   it('should delete the category and return the deleted result', async () => {

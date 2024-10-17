@@ -10,7 +10,6 @@ const DUMMY_USER = {
   email: 'test@email.com',
 };
 
-
 describe('UsersController', () => {
   let controller: UsersController;
 

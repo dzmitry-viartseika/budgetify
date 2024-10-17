@@ -12,7 +12,7 @@ const mockCategoryService = {
 };
 
 const USER = {
-  userId: 'user123'
+  userId: 'user123',
 };
 
 describe('CategoryController', () => {

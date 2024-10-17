@@ -20,10 +20,10 @@ export class User {
   @Prop()
   avatar?: string;
 
-  @Prop({default: now()})
+  @Prop({ default: now() })
   createdAt: Date;
 
-  @Prop({default: now()})
+  @Prop({ default: now() })
   updatedAt: Date;
 }
 

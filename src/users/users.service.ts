@@ -15,11 +15,14 @@ export class UsersService {
     const existingUser = await this.userModel.findOne({ email: createUserDto.email }).exec();
     if (existingUser) {
       this.logger.error(`User with email ${createUserDto.email} already exists`);
-      throw new HttpException({
-        status: HttpStatus.FORBIDDEN,
-        message: 'User with this email already exists',
-        path: request.url,
-      }, HttpStatus.FORBIDDEN);
+      throw new HttpException(
+        {
+          status: HttpStatus.FORBIDDEN,
+          message: 'User with this email already exists',
+          path: request.url,
+        },
+        HttpStatus.FORBIDDEN
+      );
     }
 
     this.logger.verbose(`Creating user with email: ${createUserDto.email}`);
@@ -46,14 +49,9 @@ export class UsersService {
     return this.userModel.findOne({ email }).exec();
   }
 
-  async update(
-    id: string,
-    updateUserDto: UpdateUserDto,
-  ): Promise<UserDocument> {
+  async update(id: string, updateUserDto: UpdateUserDto): Promise<UserDocument> {
     this.logger.verbose(`Updating user by userId= ${id} with following data ${updateUserDto}`);
-    return this.userModel
-      .findByIdAndUpdate(id, updateUserDto, { new: true })
-      .exec();
+    return this.userModel.findByIdAndUpdate(id, updateUserDto, { new: true }).exec();
   }
 
   async remove(id: string): Promise<UserDocument> {
