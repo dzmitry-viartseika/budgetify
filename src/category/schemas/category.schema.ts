@@ -2,10 +2,9 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, now } from 'mongoose';
 import { Types } from 'mongoose';
 import { User } from '../../users/schemas/user.schema';
+import { CategoryTypeEnum } from '../../types/enums/CategoryType.enum';
 
 export type CategoryDocument = Category & Document;
-export type CategoryType = 'Expense' | 'Income';
-
 
 @Schema()
 export class Category extends Document {
@@ -15,8 +14,8 @@ export class Category extends Document {
   @Prop({ required: true })
   name: string;
 
-  @Prop({ required: true, enum: ['Expense', 'Income'], default: 'Expense' })
-  type: CategoryType;
+  @Prop({ required: true, enum: CategoryTypeEnum, default: CategoryTypeEnum.EXPENSE })
+  type: CategoryTypeEnum;
 
   @Prop({default: now()})
   createdAt: Date;
