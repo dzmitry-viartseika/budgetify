@@ -6,7 +6,6 @@ import { CreateUserDto } from '../users/dto/create-user.dto';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import { UserDto } from './dto/user.dto';
 import { LoginAuthDto } from './dto/login-auth.dto';
 import { request } from 'express';
 import { TokensService } from '../tokens/tokens.service';
@@ -50,7 +49,7 @@ export class AuthService {
 
     const tokens = await this.getTokens(newUser.id, newUser.email);
     await this.tokensService.create(newUser.id, tokens.refreshToken);
-    return new UserDto(newUser, tokens);
+    return tokens;
   }
 
   async signIn(data: LoginAuthDto) {
@@ -73,7 +72,7 @@ export class AuthService {
     }
     const tokens = await this.getTokens(user.id, user.email);
     await this.tokensService.update(user.id, tokens.refreshToken);
-    return new UserDto(user, tokens);
+    return tokens;
   }
 
   async logout(userId: string) {

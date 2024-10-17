@@ -11,13 +11,10 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import { CustomHttpException } from '../utils/CustomHttpException';
-import { UsersService } from '../users/users.service';
 
 @ApiTags('auth')
 @Controller('auth')
 export class AuthController {
-  private logger = new Logger(UsersService.name);
   constructor(private authService: AuthService) {}
 
   @Post('signup')
@@ -33,7 +30,7 @@ export class AuthController {
     description: 'Internal server error.',
   })
   async signup(@Body() createUserDto: CreateAuthDto) {
-    return await this.authService.signUp(createUserDto);
+    return this.authService.signUp(createUserDto);
   }
 
   @Post('signin')
@@ -52,7 +49,7 @@ export class AuthController {
     description: 'Internal server error.',
   })
   async signin(@Body() data: CreateAuthDto) {
-    return await this.authService.signIn(data);
+    return this.authService.signIn(data);
   }
 
   @UseGuards(AccessTokenGuard)

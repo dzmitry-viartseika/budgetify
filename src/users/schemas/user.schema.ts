@@ -12,7 +12,13 @@ export class User {
   password: string;
 
   @Prop()
-  refreshToken: string | null;
+  lastName?: string;
+
+  @Prop()
+  firstName?: string;
+
+  @Prop()
+  avatar?: string;
 
   @Prop({default: now()})
   createdAt: Date;

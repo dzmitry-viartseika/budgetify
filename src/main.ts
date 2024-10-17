@@ -5,6 +5,7 @@ import { Logger, ValidationPipe } from '@nestjs/common';
 import * as fs from 'fs';
 import * as process from 'node:process';
 import { HttpExceptionFilter } from './filters/http-exception.filter';
+import { API_VERSION } from './constants/api-version';
 
 async function bootstrap() {
   const httpsOptions = {
@@ -12,6 +13,7 @@ async function bootstrap() {
     cert: fs.readFileSync('./src/cert/localhost.cert.pem'),
   };
   const app = await NestFactory.create(AppModule, { cors: true, httpsOptions });
+  app.setGlobalPrefix(API_VERSION);
   app.useGlobalPipes();
   app.useGlobalFilters(new HttpExceptionFilter());
   app.useGlobalPipes(new ValidationPipe({
@@ -25,6 +27,7 @@ async function bootstrap() {
     .setDescription('The Budgetify API description')
     .addTag('users')
     .addTag('auth')
+    .addTag('category')
     .setVersion('1.0')
     .addBearerAuth({
       type: 'http',

@@ -38,7 +38,7 @@ export class UsersService {
 
   async findById(id: string): Promise<UserDocument> {
     const user = await this.userModel.findById(id);
-    this.logger.verbose(`fetched user by userId= ${id}`);
+    this.logger.verbose(`fetched user by userId ${id}`);
     return user;
   }
 
@@ -50,14 +50,14 @@ export class UsersService {
     id: string,
     updateUserDto: UpdateUserDto,
   ): Promise<UserDocument> {
-    this.logger.verbose(`Updating user by userId= ${id} with following data=${updateUserDto}`);
+    this.logger.verbose(`Updating user by userId= ${id} with following data ${updateUserDto}`);
     return this.userModel
       .findByIdAndUpdate(id, updateUserDto, { new: true })
       .exec();
   }
 
   async remove(id: string): Promise<UserDocument> {
-    this.logger.verbose(`Deleting user by userId= ${id}`);
+    this.logger.verbose(`Deleting user by userId ${id}`);
     return this.userModel.findByIdAndDelete(id).exec();
   }
 }
