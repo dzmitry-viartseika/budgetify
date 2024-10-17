@@ -75,18 +75,18 @@ export class AuthService {
     return tokens;
   }
 
-  async logout(userId: string) {
-    this.logger.verbose(`Logging out user with ID: ${userId}`);
-    await this.tokensService.delete(userId);
-    this.logger.log(`Successfully logged out user with ID: ${userId}`);
+  async logout(id: string) {
+    this.logger.verbose(`Logging out user with ID: ${id}`);
+    await this.tokensService.delete(id);
+    this.logger.log(`Successfully logged out user with ID: ${id}`);
   }
 
-  async refreshTokens(userId: string, refreshToken: string) {
-    this.logger.verbose(`Refreshing tokens for user with ID: ${userId}`);
+  async refreshTokens(id: string, refreshToken: string) {
+    this.logger.verbose(`Refreshing tokens for user with ID: ${id}`);
 
-    const storedToken = await this.tokensService.findByUserId(userId);
+    const storedToken = await this.tokensService.findByUserId(id);
     if (!storedToken) {
-      this.logger.error(`Refresh token not found for user ID: ${userId}`);
+      this.logger.error(`Refresh token not found for user ID: ${id}`);
       throw new HttpException({
         status: HttpStatus.FORBIDDEN,
         message: 'Access Denied: Refresh token not found',
@@ -95,14 +95,14 @@ export class AuthService {
 
     const refreshTokenMatches = await bcrypt.compare(refreshToken, storedToken.refreshToken);
     if (!refreshTokenMatches) {
-      this.logger.error(`Invalid refresh token for user ID: ${userId}`);
+      this.logger.error(`Invalid refresh token for user ID: ${id}`);
       throw new HttpException({
         status: HttpStatus.FORBIDDEN,
         message: 'Access Denied: Invalid refresh token',
       }, HttpStatus.FORBIDDEN);
     }
 
-    const user = await this.usersService.findById(userId);
+    const user = await this.usersService.findById(id);
     if (!user) {
       throw new HttpException({
         status: HttpStatus.NOT_FOUND,
@@ -110,11 +110,11 @@ export class AuthService {
       }, HttpStatus.NOT_FOUND);
     }
 
-    const tokens = await this.getTokens(userId, user.email);
-    this.logger.verbose(`Generated new tokens for user ID: ${userId}`);
+    const tokens = await this.getTokens(id, user.email);
+    this.logger.verbose(`Generated new tokens for user ID: ${id}`);
 
-    await this.tokensService.update(userId, tokens.refreshToken);
-    this.logger.verbose(`Updated refresh token for user ID: ${userId}`);
+    await this.tokensService.update(id, tokens.refreshToken);
+    this.logger.verbose(`Updated refresh token for user ID: ${id}`);
 
     return tokens;
   }
@@ -124,14 +124,14 @@ export class AuthService {
     return hash;
   }
 
-  async getTokens(userId: string, username: string) {
-    this.logger.log(`Generating tokens for user ID: ${userId}`);
+  async getTokens(id: string, email: string) {
+    this.logger.log(`Generating tokens for user ID: ${id}`);
 
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(
         {
-          userId: userId,
-          username,
+          id,
+          email,
         },
         {
           secret: process.env.JWT_ACCESS_SECRET,
@@ -140,8 +140,8 @@ export class AuthService {
       ),
       this.jwtService.signAsync(
         {
-          userId: userId,
-          username,
+          id,
+          email,
         },
         {
           secret: process.env.JWT_REFRESH_SECRET,
@@ -150,7 +150,7 @@ export class AuthService {
       ),
     ]);
 
-    this.logger.log(`Tokens generated successfully for user ID: ${userId}`);
+    this.logger.log(`Tokens generated successfully for user ID: ${id}`);
 
     return {
       accessToken,
