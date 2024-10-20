@@ -38,10 +38,10 @@ async function bootstrap() {
     })
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document); // http://localhost:3000/api
+  SwaggerModule.setup('api', app, document); // https://localhost:3000/api
   SwaggerModule.setup('swagger', app, document, {
     jsonDocumentUrl: 'swagger/json',
-  }); //  http://localhost:3000/swagger/json
+  }); //  https://localhost:3000/swagger/json
   logger.log(`Application running on port ${process.env.PORT}`);
   await app.listen(process.env.PORT);
 }

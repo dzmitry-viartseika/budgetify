@@ -7,7 +7,6 @@ import { RefreshTokenGuard } from '../guards/refresh-token.guard';
 
 describe('AuthController', () => {
   let authController: AuthController;
-  let authService: AuthService;
 
   const mockAuthService = {
     signUp: jest.fn(),
@@ -43,8 +42,7 @@ describe('AuthController', () => {
       ],
     }).compile();
 
-    authController = module.get<AuthController>(AuthController);
-    authService = module.get<AuthService>(AuthService);
+    authController = module.get<AuthController>(AuthController) as any;
   });
 
   describe('signup', () => {

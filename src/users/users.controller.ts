@@ -1,4 +1,20 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, HttpStatus, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  HttpStatus,
+  UseGuards,
+  UseInterceptors,
+  UploadedFile,
+  Put,
+  NotFoundException,
+  InternalServerErrorException,
+  HttpException,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -14,11 +30,20 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { AccessTokenGuard } from '../guards/access-token.guard';
+import { FilesService } from '../files/files.service';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { Express, request } from 'express';
+import { CurrentUser } from '../decorators/current-user.decorator';
+import { JwtPayload } from '../types/types/jwt-token.type';
 
 @ApiTags('users')
+@UseGuards(AccessTokenGuard)
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly fileService: FilesService
+  ) {}
 
   @ApiResponse({ status: HttpStatus.CREATED, description: 'User created successfully.' })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Failed to create user due to invalid data.' })
@@ -56,6 +81,33 @@ export class UsersController {
   @Get()
   async findAll() {
     return await this.usersService.findAll();
+  }
+
+  @Get('profile')
+  @UseGuards(AccessTokenGuard)
+  async getProfile(@CurrentUser() user: JwtPayload) {
+    console.log('Inside getProfile method');
+
+    try {
+      console.log('Current User:', user);
+
+      if (!user || !user.id) {
+        throw new Error('User is not authenticated');
+      }
+
+      const fetchedUser = await this.usersService.getUserWithAvatar(user.id);
+      console.log('Fetched User:', fetchedUser);
+
+      if (!fetchedUser) {
+        console.error(`User not found for ID: ${user.id}`);
+        throw new NotFoundException(`User not found for ID: ${user.id}`);
+      }
+
+      return fetchedUser;
+    } catch (error) {
+      console.error('Error fetching user profile:', error.message);
+      throw new InternalServerErrorException('Could not fetch user profile');
+    }
   }
 
   @ApiOkResponse({
@@ -130,5 +182,59 @@ export class UsersController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.usersService.remove(id);
+  }
+
+  @Put(':id/avatar')
+  @UseInterceptors(
+    FileInterceptor('file', {
+      limits: { fileSize: 5 * 1024 * 1024 },
+      fileFilter: (req, file, callback) => {
+        if (!file.mimetype.match(/\/(jpg|jpeg|png|gif)$/)) {
+          return callback(new Error('Only image files are allowed!'), false);
+        }
+        callback(null, true);
+      },
+    })
+  )
+  async uploadAvatar(@Param('id') userId: string, @UploadedFile() file: Express.Multer.File) {
+    if (!file) {
+      throw new HttpException(
+        {
+          status: HttpStatus.BAD_REQUEST,
+          message: 'File is not provided',
+          path: request.url,
+        },
+        HttpStatus.BAD_REQUEST
+      );
+    }
+
+    let avatarFileName: string;
+    try {
+      avatarFileName = await this.fileService.uploadFile(file);
+    } catch (error) {
+      throw new HttpException(
+        {
+          status: HttpStatus.INTERNAL_SERVER_ERROR,
+          message: `Error uploading file ${error}`,
+          path: request.url,
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR
+      );
+    }
+
+    try {
+      await this.usersService.updateAvatar(userId, avatarFileName);
+    } catch (error) {
+      throw new HttpException(
+        {
+          status: HttpStatus.INTERNAL_SERVER_ERROR,
+          message: `Error updating avatar ${error}`,
+          path: request.url,
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR
+      );
+    }
+
+    return { avatarFileName };
   }
 }
