@@ -38,10 +38,10 @@ jobs:
       - name: Test
         run: npm run test
       - name: Set environment variables for MongoDB
-        run: echo "MONGO_URI=${{ secrets.MONGODB_URI }}"
+        run: echo "MONGODB_URI=${{ secrets.MONGODB_URI }}"
       - name: E2E
         env:
-          MONGO_URI: ${{ secrets.MONGODB_URI }}
+          DB_URL: ${{ secrets.MONGODB_URI }}
         run: npm run test:e2e
       - name: Build
         run: npm run build
