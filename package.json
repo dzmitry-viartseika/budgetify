@@ -7,7 +7,7 @@
   "author": "Dzmitry Viartseika",
   "scripts": {
     "build": "nest build",
-    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+    "format": "prettier --write \"src/**/*.ts\"",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "precommit": "lint-staged && npm run lint",
     "prepare": "husky",
