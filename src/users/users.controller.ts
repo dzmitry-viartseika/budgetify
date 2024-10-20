@@ -30,7 +30,6 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { AccessTokenGuard } from '../guards/access-token.guard';
-import { FilesService } from '../files/files.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Express, request } from 'express';
 import { CurrentUser } from '../decorators/current-user.decorator';
@@ -40,10 +39,7 @@ import { JwtPayload } from '../types/types/jwt-token.type';
 @UseGuards(AccessTokenGuard)
 @Controller('users')
 export class UsersController {
-  constructor(
-    private readonly usersService: UsersService,
-    private readonly fileService: FilesService
-  ) {}
+  constructor(private readonly usersService: UsersService) {}
 
   @ApiResponse({ status: HttpStatus.CREATED, description: 'User created successfully.' })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Failed to create user due to invalid data.' })
