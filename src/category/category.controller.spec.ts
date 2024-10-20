@@ -2,7 +2,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { CategoryController } from './category.controller';
 import { CategoryService } from './category.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
-import { DeleteCategoryDto } from './dto/delete-category.dto';
 
 const mockCategoryService = {
   create: jest.fn(),
