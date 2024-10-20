@@ -11,9 +11,7 @@ import {
   UseInterceptors,
   UploadedFile,
   Put,
-  NotFoundException,
-  InternalServerErrorException,
-  HttpException,
+  Logger,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -31,7 +29,7 @@ import {
 } from '@nestjs/swagger';
 import { AccessTokenGuard } from '../guards/access-token.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { Express, request } from 'express';
+import { Express } from 'express';
 import { CurrentUser } from '../decorators/current-user.decorator';
 import { JwtPayload } from '../types/types/jwt-token.type';
 import { FilesService } from '../files/files.service';
@@ -40,6 +38,7 @@ import { FilesService } from '../files/files.service';
 @UseGuards(AccessTokenGuard)
 @Controller('users')
 export class UsersController {
+  private readonly logger = new Logger(UsersController.name);
   constructor(
     private readonly usersService: UsersService,
     private readonly fileService: FilesService
@@ -86,28 +85,7 @@ export class UsersController {
   @Get('profile')
   @UseGuards(AccessTokenGuard)
   async getProfile(@CurrentUser() user: JwtPayload) {
-    console.log('Inside getProfile method');
-
-    try {
-      console.log('Current User:', user);
-
-      if (!user || !user.id) {
-        throw new Error('User is not authenticated');
-      }
-
-      const fetchedUser = await this.usersService.getUserWithAvatar(user.id);
-      console.log('Fetched User:', fetchedUser);
-
-      if (!fetchedUser) {
-        console.error(`User not found for ID: ${user.id}`);
-        throw new NotFoundException(`User not found for ID: ${user.id}`);
-      }
-
-      return fetchedUser;
-    } catch (error) {
-      console.error('Error fetching user profile:', error.message);
-      throw new InternalServerErrorException('Could not fetch user profile');
-    }
+    return await this.usersService.getUserWithAvatar(user.id);
   }
 
   @ApiOkResponse({
@@ -184,7 +162,8 @@ export class UsersController {
     return this.usersService.remove(id);
   }
 
-  @Put(':id/avatar')
+  @Put('avatar')
+  @UseGuards(AccessTokenGuard)
   @UseInterceptors(
     FileInterceptor('file', {
       limits: { fileSize: 5 * 1024 * 1024 },
@@ -196,44 +175,10 @@ export class UsersController {
       },
     })
   )
-  async uploadAvatar(@Param('id') userId: string, @UploadedFile() file: Express.Multer.File) {
-    if (!file) {
-      throw new HttpException(
-        {
-          status: HttpStatus.BAD_REQUEST,
-          message: 'File is not provided',
-          path: request.url,
-        },
-        HttpStatus.BAD_REQUEST
-      );
-    }
+  async uploadAvatar(@CurrentUser() user: JwtPayload, @UploadedFile() file: Express.Multer.File) {
+    const avatarFileName = await this.fileService.uploadFile(file);
 
-    let avatarFileName: string;
-    try {
-      avatarFileName = await this.fileService.uploadFile(file);
-    } catch (error) {
-      throw new HttpException(
-        {
-          status: HttpStatus.INTERNAL_SERVER_ERROR,
-          message: `Error uploading file ${error}`,
-          path: request.url,
-        },
-        HttpStatus.INTERNAL_SERVER_ERROR
-      );
-    }
-
-    try {
-      await this.usersService.updateAvatar(userId, avatarFileName);
-    } catch (error) {
-      throw new HttpException(
-        {
-          status: HttpStatus.INTERNAL_SERVER_ERROR,
-          message: `Error updating avatar ${error}`,
-          path: request.url,
-        },
-        HttpStatus.INTERNAL_SERVER_ERROR
-      );
-    }
+    await this.usersService.updateAvatar(user.id, avatarFileName);
 
     return { avatarFileName };
   }

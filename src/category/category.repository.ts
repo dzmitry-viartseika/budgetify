@@ -47,9 +47,10 @@ export class CategoryRepository {
     user,
     category: Partial<CreateCategoryDto>
   ): Promise<CreateCategoryDto | null> {
-    const updatedUserCategory = this.categoryModel
+    const updatedUserCategory = await this.categoryModel
       .findOneAndUpdate({ userId: user.id, _id: categoryId }, category, { new: true })
       .exec();
+    console.log('updatedUserCategory', updatedUserCategory);
     if (!updatedUserCategory) {
       this.logger.error(`Category with caltegoryId ${categoryId} does not exists for userId ${user.id}`);
       throw new HttpException(
