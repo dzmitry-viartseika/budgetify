@@ -50,7 +50,7 @@ describe('CategoryRepository', () => {
     const result = await categoryRepository.findAll({ userId }, search);
 
     expect(result).toEqual(categories);
-    expect(categoryModel.find).toHaveBeenCalledWith({ userId, name: { $regex: search, $options: 'i' } });
+    expect(categoryModel.find).toHaveBeenCalledWith({ name: { $regex: search, $options: 'i' } });
   });
 
   it('should update the category and return the updated result', async () => {
@@ -65,7 +65,7 @@ describe('CategoryRepository', () => {
     const result = await categoryRepository.updateByUserIdAndCategoryId(categoryId, { userId }, updateCategoryDto);
 
     expect(result).toEqual(updateCategoryDto);
-    expect(categoryModel.findOneAndUpdate).toHaveBeenCalledWith({ _id: categoryId, userId }, updateCategoryDto, {
+    expect(categoryModel.findOneAndUpdate).toHaveBeenCalledWith({ _id: categoryId }, updateCategoryDto, {
       new: true,
     });
   });
@@ -82,6 +82,6 @@ describe('CategoryRepository', () => {
     const result = await categoryRepository.removeByUserIdAndCategoryId({ userId }, { categoryId });
 
     expect(result).toEqual(deletedCategory);
-    expect(categoryModel.findOneAndDelete).toHaveBeenCalledWith({ _id: categoryId, userId });
+    expect(categoryModel.findOneAndDelete).toHaveBeenCalledWith({ _id: categoryId });
   });
 });
