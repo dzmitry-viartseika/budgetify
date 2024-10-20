@@ -37,13 +37,11 @@ jobs:
         run: npm run format
       - name: Test
         run: npm run test
-      - name: Copy .env
-        run: cp .env .env
-      - name: Build the docker-compose stack
-        run: docker compose up -d --build mongodb
-      - name: Check running containers
-        run: docker ps -a
+      - name: Set environment variables for MongoDB
+        run: echo "MONGO_URI=${{ secrets.MONGODB_URI }}"
       - name: E2E
+        env:
+          MONGO_URI: ${{ secrets.MONGODB_URI }}
         run: npm run test:e2e
       - name: Build
         run: npm run build
