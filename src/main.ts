@@ -29,7 +29,7 @@ async function bootstrap() {
     .setDescription('The Budgetify API description')
     .addTag('users')
     .addTag('auth')
-    .addTag('category')
+    .addTag('categories')
     .setVersion('1.0')
     .addBearerAuth({
       type: 'http',
@@ -38,10 +38,10 @@ async function bootstrap() {
     })
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document); // http://localhost:3000/api
+  SwaggerModule.setup('api', app, document); // https://localhost:3000/api
   SwaggerModule.setup('swagger', app, document, {
     jsonDocumentUrl: 'swagger/json',
-  }); //  http://localhost:3000/swagger/json
+  }); //  https://localhost:3000/swagger/json
   logger.log(`Application running on port ${process.env.PORT}`);
   await app.listen(process.env.PORT);
 }

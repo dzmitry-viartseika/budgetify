@@ -3,6 +3,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
+import { FilesService } from '../files/files.service';
 
 const DUMMY_USER = {
   id: '1',
@@ -21,6 +22,11 @@ describe('UsersController', () => {
     remove: jest.fn(),
   };
 
+  const mockFileService = {
+    deleteOldAvatarFromS3: jest.fn(),
+    uploadFile: jest.fn(),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [UsersController],
@@ -28,6 +34,10 @@ describe('UsersController', () => {
         {
           provide: UsersService,
           useValue: mockUsersService,
+        },
+        {
+          provide: FilesService,
+          useValue: mockFileService,
         },
       ],
     }).compile();

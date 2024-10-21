@@ -17,6 +17,12 @@ import { CreateUserDto } from '../users/dto/create-user.dto';
 import { DeleteCategoryDto } from './dto/delete-category.dto';
 import { CurrentUser } from '../decorators/current-user.decorator';
 
+/**
+ * whatever the string pass in controller decorator it will be appended to
+ * API URL. to call any API from this controller you need to add prefix which is
+ * passed in controller decorator.
+ * in our case our base URL is https://localhost:3000/v1/categories
+ */
 @ApiTags('categories')
 @Controller('categories')
 @UseGuards(AccessTokenGuard)

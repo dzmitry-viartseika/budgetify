@@ -1,4 +1,18 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, HttpStatus, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  HttpStatus,
+  UseGuards,
+  UseInterceptors,
+  UploadedFile,
+  Put,
+  Logger,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -14,12 +28,34 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { AccessTokenGuard } from '../guards/access-token.guard';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { Express } from 'express';
+import { CurrentUser } from '../decorators/current-user.decorator';
+import { JwtPayload } from '../types/types/jwt-token.type';
+import { FilesService } from '../files/files.service';
 
+/**
+ * whatever the string pass in controller decorator it will be appended to
+ * API URL. to call any API from this controller you need to add prefix which is
+ * passed in controller decorator.
+ * in our case our base URL is https://localhost:3000/v1/users
+ */
 @ApiTags('users')
+@UseGuards(AccessTokenGuard)
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  private readonly logger = new Logger(UsersController.name);
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly fileService: FilesService
+  ) {}
 
+  /**
+   * Post decorator represents method of request as we have used post decorator the method
+   * of this API will be post.
+   * so the API URL to create User will be
+   * POST https://localhost:3000/v1/users
+   */
   @ApiResponse({ status: HttpStatus.CREATED, description: 'User created successfully.' })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Failed to create user due to invalid data.' })
   @ApiCreatedResponse({
@@ -43,6 +79,10 @@ export class UsersController {
     return await this.usersService.create(createUserDto);
   }
 
+  /**
+   * We have used GET decorator to get all the user's list so the API URL will be
+   * GET https://localhost:3000/v1/users
+   */
   @ApiCreatedResponse({
     type: [CreateUserDto],
   })
@@ -58,6 +98,21 @@ export class UsersController {
     return await this.usersService.findAll();
   }
 
+  /**
+   * We have used GET decorator with user id to get id from token so the API URL will be
+   * GET https://localhost:3000/v1/users/profile
+   */
+  @Get('profile')
+  @UseGuards(AccessTokenGuard)
+  async getProfile(@CurrentUser() user: JwtPayload) {
+    return await this.usersService.getUserWithAvatar(user.id);
+  }
+
+  /**
+   * we have used GET decorator with id param to get id from request
+   * so the API URL will be
+   * GET https://localhost:3000/v1/users/:id
+   */
   @ApiOkResponse({
     description: 'User found.',
     type: CreateUserDto,
@@ -83,6 +138,11 @@ export class UsersController {
     return this.usersService.findById(id);
   }
 
+  /**
+   * we have used PATCH decorator with id param to get id from request
+   * so the API URL will be
+   * PATCH https://localhost:3000/v1/users/:id
+   */
   @ApiOkResponse({
     description: 'User successfully updated.',
     type: UpdateUserDto,
@@ -108,6 +168,11 @@ export class UsersController {
     return this.usersService.update(id, updateUserDto);
   }
 
+  /**
+   * we have used DELETE decorator with id param to get id from request
+   * so the API URL will be
+   * DELETE https://localhost:3000/v1/users/:id
+   */
   @ApiOkResponse({
     description: 'User successfully deleted.',
   })
@@ -130,5 +195,26 @@ export class UsersController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.usersService.remove(id);
+  }
+
+  @Put('avatar')
+  @UseGuards(AccessTokenGuard)
+  @UseInterceptors(
+    FileInterceptor('file', {
+      limits: { fileSize: 5 * 1024 * 1024 },
+      fileFilter: (req, file, callback) => {
+        if (!file.mimetype.match(/\/(jpg|jpeg|png|gif)$/)) {
+          return callback(new Error('Only image files are allowed!'), false);
+        }
+        callback(null, true);
+      },
+    })
+  )
+  async uploadAvatar(@CurrentUser() user: JwtPayload, @UploadedFile() file: Express.Multer.File) {
+    const avatarFileName = await this.fileService.uploadFile(file);
+
+    await this.usersService.updateAvatar(user.id, avatarFileName);
+
+    return { avatarFileName };
   }
 }
