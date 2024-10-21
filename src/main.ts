@@ -29,7 +29,7 @@ async function bootstrap() {
     .setDescription('The Budgetify API description')
     .addTag('users')
     .addTag('auth')
-    .addTag('category')
+    .addTag('categories')
     .setVersion('1.0')
     .addBearerAuth({
       type: 'http',
