@@ -47,7 +47,7 @@ export class CategoryRepository {
     user,
     category: Partial<CreateCategoryDto>
   ): Promise<CreateCategoryDto | null> {
-    const updatedUserCategory = this.categoryModel
+    const updatedUserCategory = await this.categoryModel
       .findOneAndUpdate({ userId: user.id, _id: categoryId }, category, { new: true })
       .exec();
     if (!updatedUserCategory) {
