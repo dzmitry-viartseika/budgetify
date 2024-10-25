@@ -7,7 +7,7 @@ import { User, UserDocument } from './schemas/user.schema';
 import { request } from 'express';
 import { plainToInstance } from 'class-transformer';
 import { FilesService } from '../files/files.service';
-import { getPresignedUrl } from '../utils/getPresignedUrl';
+import { getPresignedUrl } from '../files/utils/getPresignedUrl';
 
 @Injectable()
 export class UsersService {
@@ -91,7 +91,7 @@ export class UsersService {
 
     if (oldAvatarFileName) {
       console.log('oldONE');
-      await this.fileService.deleteOldAvatarFromS3(oldAvatarFileName);
+      await this.fileService.deleteFile(oldAvatarFileName);
     }
     console.log('user', user);
     return user;

@@ -33,7 +33,7 @@ export class FilesService {
     return fileName;
   }
 
-  public async deleteOldAvatarFromS3(avatarUrl: string): Promise<void> {
+  public async deleteFile(avatarUrl: string): Promise<void> {
     const cleanedUrl = avatarUrl.split('?')[0];
 
     const finalFileName = cleanedUrl.split('/').pop();
