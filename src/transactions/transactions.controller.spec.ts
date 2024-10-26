@@ -5,6 +5,7 @@ import { TransactionsService } from './transactions.service';
 import { AccessTokenGuard } from '../guards/access-token.guard';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { GetTransactionsDto } from './dto/get-transactions.dto';
+import { FilesService } from '../files/files.service';
 
 const USER = {
   userId: 'user123',
@@ -25,6 +26,11 @@ describe('TransactionsController', () => {
   let controller: TransactionsController;
   let transactionsService: TransactionsService;
 
+  const mockFileService = {
+    deleteOldAvatarFromS3: jest.fn(),
+    uploadFile: jest.fn(),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [TransactionsController],
@@ -38,6 +44,10 @@ describe('TransactionsController', () => {
             update: jest.fn(),
             remove: jest.fn(),
           },
+        },
+        {
+          provide: FilesService,
+          useValue: mockFileService,
         },
       ],
     })
