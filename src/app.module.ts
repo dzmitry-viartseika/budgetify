@@ -7,6 +7,7 @@ import { AuthModule } from './auth/auth.module';
 import { TokensModule } from './tokens/tokens.module';
 import { CategoryModule } from './category/category.module';
 import { FilesModule } from './files/files.module';
+import { TransactionsModule } from './transactions/transactions.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { FilesModule } from './files/files.module';
     TokensModule,
     CategoryModule,
     FilesModule,
+    TransactionsModule,
   ],
   controllers: [],
   providers: [AppService],

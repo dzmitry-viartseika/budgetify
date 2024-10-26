@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { S3Client, PutObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
 import { v4 as uuid } from 'uuid';
 import { request } from 'express';
+import { FilePrefixEnum } from '../types/enums/file-prefix.enum';
 
 @Injectable()
 export class FilesService {
@@ -19,8 +20,8 @@ export class FilesService {
     });
   }
 
-  async uploadFile(file: Express.Multer.File): Promise<string> {
-    const fileName = `${uuid()}-${file.originalname}`;
+  async uploadFile(file: Express.Multer.File, prefix: FilePrefixEnum): Promise<string> {
+    const fileName = `${prefix}/${uuid()}-${file.originalname}`;
     const uploadParams = {
       Bucket: this.bucketName,
       Key: fileName,

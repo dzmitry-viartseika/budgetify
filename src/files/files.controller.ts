@@ -59,10 +59,10 @@ export class FilesController {
       },
     })
   )
-  async uploadFile(@UploadedFile() file: Express.Multer.File) {
+  async uploadFile(@UploadedFile() file: Express.Multer.File, prefix) {
     try {
       this.logger.verbose(`Try to upload file with name: ${file}`);
-      const fileName = await this.filesService.uploadFile(file);
+      const fileName = await this.filesService.uploadFile(file, prefix);
       this.logger.verbose(`The file uploaded with name: ${fileName}`);
       return { fileName, message: 'File uploaded successfully' };
     } catch (error) {
