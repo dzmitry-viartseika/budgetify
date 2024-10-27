@@ -66,9 +66,7 @@ export class UsersService {
   }
 
   async updateAvatar(userId: string, avatarFileName: string): Promise<User> {
-    console.log('updateAvatar');
     const user = await this.userModel.findById(userId).exec();
-    console.log('user', user);
     if (!user) {
       this.logger.warn(`User with ID ${userId} not found`);
       throw new HttpException(
@@ -90,10 +88,9 @@ export class UsersService {
     this.logger.verbose(`Avatar updated for user ID: ${userId}`);
 
     if (oldAvatarFileName) {
-      console.log('oldONE');
       await this.fileService.deleteFile(oldAvatarFileName);
     }
-    console.log('user', user);
+
     return user;
   }
 

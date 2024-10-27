@@ -3,6 +3,7 @@ import { S3Client, PutObjectCommand, DeleteObjectCommand } from '@aws-sdk/client
 import { v4 as uuid } from 'uuid';
 import { request } from 'express';
 import { FilePrefixEnum } from '../types/enums/file-prefix.enum';
+import { getPresignedUrl } from './utils/getPresignedUrl';
 
 @Injectable()
 export class FilesService {
@@ -80,6 +81,17 @@ export class FilesService {
         },
         HttpStatus.INTERNAL_SERVER_ERROR
       );
+    }
+  }
+
+  async generateDownloadLink(fileName: string): Promise<string> {
+    try {
+      const url = await getPresignedUrl(fileName);
+      this.logger.verbose(`Generated pre-signed URL for file: ${fileName}`);
+      return url;
+    } catch (error) {
+      this.logger.error(`Failed to generate pre-signed URL: ${error.message}`);
+      throw new HttpException('Failed to generate download link', HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 }

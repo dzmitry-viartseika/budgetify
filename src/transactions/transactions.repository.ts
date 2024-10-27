@@ -5,6 +5,7 @@ import { Transaction, TransactionDocument } from './schemas/transaction.schema';
 import { request } from 'express';
 import { FilesService } from '../files/files.service';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
+import { getPresignedUrl } from '../files/utils/getPresignedUrl';
 
 @Injectable()
 export class TransactionRepository {
@@ -31,7 +32,7 @@ export class TransactionRepository {
     const selectedTransaction = await this.transactionModel
       .findOne({ userId: user.id, _id: transactionId.trim() })
       .exec();
-    console.log('selectedTransaction', selectedTransaction);
+
     if (!selectedTransaction) {
       this.logger.error(`Transaction with id ${selectedTransaction.id} already exists`);
       throw new HttpException(
@@ -43,6 +44,28 @@ export class TransactionRepository {
         HttpStatus.NOT_FOUND
       );
     }
+
+    if (selectedTransaction.files && selectedTransaction.files.length > 0) {
+      try {
+        const fileUrls = await Promise.all(
+          selectedTransaction.files.map(async fileName => ({
+            fileName,
+            url: await getPresignedUrl(fileName),
+          }))
+        );
+        selectedTransaction.files = fileUrls as any;
+      } catch (error) {
+        this.logger.error(`Error generating presigned URLs: ${error.message}`);
+        throw new HttpException(
+          {
+            status: HttpStatus.INTERNAL_SERVER_ERROR,
+            message: 'Could not generate presigned URLs',
+          },
+          HttpStatus.INTERNAL_SERVER_ERROR
+        );
+      }
+    }
+
     this.logger.verbose(`User fetched transaction with ID ${transactionId} successfully`);
     return selectedTransaction;
   }

@@ -9,6 +9,7 @@ import {
   HttpStatus,
   UseGuards,
   Logger,
+  Body,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { FilesService } from './files.service';
@@ -105,6 +106,27 @@ export class FilesController {
         {
           status: HttpStatus.INTERNAL_SERVER_ERROR,
           message: `Failed to delete file ${error}`,
+          path: request.url,
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR
+      );
+    }
+  }
+
+  @Post('download')
+  async generateDownloadLink(@Body('fileName') fileName: string) {
+    if (!fileName) {
+      throw new HttpException('File name must be provided', HttpStatus.BAD_REQUEST);
+    }
+
+    try {
+      const url = await this.filesService.generateDownloadLink(fileName);
+      return { downloadUrl: url };
+    } catch (error) {
+      throw new HttpException(
+        {
+          status: HttpStatus.INTERNAL_SERVER_ERROR,
+          message: `Error generating download link ${error}`,
           path: request.url,
         },
         HttpStatus.INTERNAL_SERVER_ERROR

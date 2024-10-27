@@ -63,9 +63,12 @@ export class CreateTransactionDto {
   description?: string;
 
   @ApiProperty({
-    description: 'Transaction files',
+    description: 'Transaction files array',
+    required: false,
+    isArray: true,
+    type: String,
   })
   @IsOptional()
-  @IsString()
+  @IsString({ each: true, message: 'Each file should be a string' })
   files: string[];
 }
