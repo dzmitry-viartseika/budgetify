@@ -1,19 +1,19 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { ArrayNotEmpty, IsDate, IsIn, IsNumber, IsOptional, IsString } from 'class-validator';
+import { ArrayNotEmpty, IsDate, IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';
 import { Type } from 'class-transformer';
+import { CategoryTypeEnum } from '../../types/enums/category-type.enum';
 
 export class CreateTransactionDto {
   @ApiProperty({
     description: 'Transaction type, either "Expense" or "Income"',
     required: false,
-    enum: ['Expense', 'Income'],
-    example: 'Expense',
-    default: 'Expense',
+    enum: CategoryTypeEnum,
+    example: CategoryTypeEnum.EXPENSE,
+    default: CategoryTypeEnum.EXPENSE,
   })
-  @IsString()
+  @IsEnum(CategoryTypeEnum)
   @IsOptional()
-  @IsIn(['Expense', 'Income'])
-  readonly type: string = 'Expense';
+  readonly type: CategoryTypeEnum = CategoryTypeEnum.EXPENSE;
 
   @ApiProperty({
     description: 'Transaction title',

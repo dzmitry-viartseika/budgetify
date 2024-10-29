@@ -6,9 +6,6 @@ import { TokensService } from '../tokens/tokens.service';
 export class AccessTokenGuard extends AuthGuard('jwt') {
   private logger = new Logger(TokensService.name);
   canActivate(context: ExecutionContext): boolean {
-    const request = context.switchToHttp().getRequest();
-    this.logger.verbose(`Incoming request: ${request.headers}`);
-
     return super.canActivate(context) as boolean;
   }
 
@@ -17,7 +14,7 @@ export class AccessTokenGuard extends AuthGuard('jwt') {
       this.logger.error(`Authentication failed:', ${err}`);
       throw err || new UnauthorizedException();
     }
-    this.logger.verbose(`User authenticated successfully:', ${user}`);
+    this.logger.verbose(`User authenticated successfully:', ${user.id}`);
     return user;
   }
 }

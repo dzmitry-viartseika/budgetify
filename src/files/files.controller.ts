@@ -10,6 +10,7 @@ import {
   UseGuards,
   Logger,
   Body,
+  Get,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { FilesService } from './files.service';
@@ -113,7 +114,7 @@ export class FilesController {
     }
   }
 
-  @Post('download')
+  @Get('download')
   async generateDownloadLink(@Body('fileName') fileName: string) {
     if (!fileName) {
       throw new HttpException('File name must be provided', HttpStatus.BAD_REQUEST);

@@ -1,5 +1,6 @@
-import { IsString, IsNotEmpty, IsOptional, IsIn } from 'class-validator';
+import { IsString, IsNotEmpty, IsOptional, IsEnum } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { CategoryTypeEnum } from '../../types/enums/category-type.enum';
 
 export class CreateCategoryDto {
   @ApiProperty({
@@ -14,12 +15,11 @@ export class CreateCategoryDto {
   @ApiProperty({
     description: 'Category type, either "Expense" or "Income"',
     required: false,
-    enum: ['Expense', 'Income'],
-    example: 'Expense',
-    default: 'Expense',
+    enum: CategoryTypeEnum,
+    example: CategoryTypeEnum.EXPENSE,
+    default: CategoryTypeEnum.EXPENSE,
   })
-  @IsString()
+  @IsEnum(CategoryTypeEnum)
   @IsOptional()
-  @IsIn(['Expense', 'Income'])
-  readonly type: string = 'Expense';
+  readonly type: CategoryTypeEnum = CategoryTypeEnum.EXPENSE;
 }

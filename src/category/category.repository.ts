@@ -78,7 +78,7 @@ export class CategoryRepository {
         HttpStatus.NOT_FOUND
       );
     }
-    this.logger.verbose(`User deleted category with following data ${draftCategory} successfully`);
+    this.logger.verbose(`User deleted category with following id ${draftCategory._id} successfully`);
     return draftCategory;
   }
 }

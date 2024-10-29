@@ -29,9 +29,7 @@ export class TransactionRepository {
   }
 
   async getById(transactionId: string, user) {
-    const selectedTransaction = await this.transactionModel
-      .findOne({ userId: user.id, _id: transactionId.trim() })
-      .exec();
+    const selectedTransaction = await this.transactionModel.findOne({ userId: user.id, _id: transactionId }).exec();
 
     if (!selectedTransaction) {
       this.logger.error(`Transaction with id ${selectedTransaction.id} already exists`);

@@ -35,6 +35,7 @@ import { JwtPayload } from '../types/types/jwt-token.type';
 import { Express } from 'express';
 import { FilePrefixEnum } from '../types/enums/file-prefix.enum';
 import { FilesService } from '../files/files.service';
+import { Trim } from '../decorators/trim.decorator';
 
 @ApiTags('transactions')
 @UseGuards(AccessTokenGuard)
@@ -86,7 +87,7 @@ export class TransactionsController {
   })
   @ApiBearerAuth()
   @Get(':transactionId')
-  async getById(@Param('transactionId') transactionId: string, @CurrentUser() user) {
+  async getById(@Trim() transactionId: string, @CurrentUser() user) {
     return this.transactionService.getById(transactionId, user);
   }
 
@@ -174,7 +175,7 @@ export class TransactionsController {
       },
     })
   )
-  async uploadAvatar(@CurrentUser() user: JwtPayload, @UploadedFile() file: Express.Multer.File) {
+  async uploadDocument(@CurrentUser() user: JwtPayload, @UploadedFile() file: Express.Multer.File) {
     const documentFileName = await this.fileService.uploadFile(file, FilePrefixEnum.DOCUMENTS);
 
     return { documentFileName };
