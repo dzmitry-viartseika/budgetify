@@ -6,6 +6,7 @@ import { AccessTokenGuard } from '../guards/access-token.guard';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { GetTransactionsDto } from './dto/get-transactions.dto';
 import { FilesService } from '../files/files.service';
+import { CategoryTypeEnum } from '../types/enums/category-type.enum';
 
 const USER = {
   userId: 'user123',
@@ -16,7 +17,7 @@ const CREATE_TRANSACTION_DTO: CreateTransactionDto = {
   payee: 'Landlord',
   categories: ['Housing', 'Rent'],
   amount: 500,
-  type: 'Expense',
+  type: CategoryTypeEnum.EXPENSE,
   paymentDate: new Date('2024-10-01T00:00:00.000Z'),
   description: 'October rent payment',
   files: [],
