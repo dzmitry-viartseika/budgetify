@@ -12,6 +12,8 @@ const USER = {
   userId: 'user123',
 };
 
+const transactionId = '1';
+
 const CREATE_TRANSACTION_DTO: CreateTransactionDto = {
   title: 'Monthly Rent',
   payee: 'Landlord',
@@ -82,8 +84,6 @@ describe('TransactionsController', () => {
 
   describe('getById', () => {
     it('should throw an error if transaction is not found', async () => {
-      const transactionId = '1';
-
       jest
         .spyOn(transactionsService, 'getById')
         .mockRejectedValue(new HttpException('Not Found', HttpStatus.NOT_FOUND));
@@ -116,7 +116,6 @@ describe('TransactionsController', () => {
     });
 
     it('should throw an error if update fails', async () => {
-      const transactionId = '1';
       jest
         .spyOn(transactionsService, 'update')
         .mockRejectedValue(new HttpException('Bad Request', HttpStatus.BAD_REQUEST));
@@ -127,12 +126,9 @@ describe('TransactionsController', () => {
 
   describe('remove', () => {
     it('should delete a transaction successfully', async () => {
-      const transactionId = '1';
-
       jest.spyOn(transactionsService, 'remove').mockResolvedValue({});
 
       expect(await controller.remove(transactionId, USER)).toEqual({});
     });
   });
-  //
 });
