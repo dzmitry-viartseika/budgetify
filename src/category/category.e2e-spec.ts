@@ -37,7 +37,7 @@ describe('CategoryController (e2e)', () => {
         .post('/categories')
         .set('Authorization', `Bearer ${accessToken}`)
         .send(createCategoryDto);
-      console.log('response', response);
+
       expect(response.status).toBe(HttpStatus.CREATED);
       expect(response.body).toHaveProperty('_id');
       categoryId = response.body._id;

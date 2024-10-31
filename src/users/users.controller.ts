@@ -1,17 +1,17 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
+  Get,
   HttpStatus,
+  Logger,
+  Param,
+  Patch,
+  Post,
+  Put,
+  UploadedFile,
   UseGuards,
   UseInterceptors,
-  UploadedFile,
-  Put,
-  Logger,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -33,6 +33,7 @@ import { Express } from 'express';
 import { CurrentUser } from '../decorators/current-user.decorator';
 import { JwtPayload } from '../types/types/jwt-token.type';
 import { FilesService } from '../files/files.service';
+import { FilePrefixEnum } from '../types/enums/file-prefix.enum';
 
 /**
  * whatever the string pass in controller decorator it will be appended to
@@ -211,7 +212,7 @@ export class UsersController {
     })
   )
   async uploadAvatar(@CurrentUser() user: JwtPayload, @UploadedFile() file: Express.Multer.File) {
-    const avatarFileName = await this.fileService.uploadFile(file);
+    const avatarFileName = await this.fileService.uploadFile(file, FilePrefixEnum.AVATARS);
 
     await this.usersService.updateAvatar(user.id, avatarFileName);
 
