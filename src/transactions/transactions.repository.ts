@@ -32,7 +32,7 @@ export class TransactionRepository {
     const selectedTransaction = await this.transactionModel.findOne({ userId: user.id, _id: transactionId }).exec();
 
     if (!selectedTransaction) {
-      this.logger.error(`Transaction with id ${selectedTransaction.id} already exists`);
+      this.logger.error(`Transaction with id ${selectedTransaction.id} is not exists`);
       throw new HttpException(
         {
           status: HttpStatus.NOT_FOUND,

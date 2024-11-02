@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, now } from 'mongoose';
+import { Document, now, Types } from 'mongoose';
 import { Exclude, Expose } from 'class-transformer';
 
 export type UserDocument = User & Document;
@@ -25,6 +25,9 @@ export class User {
   @Expose()
   @Prop()
   avatar?: string;
+
+  @Prop({ type: [{ type: Types.ObjectId, ref: 'Card' }] })
+  cards: Types.ObjectId[];
 
   @Expose()
   @Prop({ default: now() })

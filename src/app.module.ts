@@ -8,6 +8,8 @@ import { TokensModule } from './tokens/tokens.module';
 import { CategoryModule } from './category/category.module';
 import { FilesModule } from './files/files.module';
 import { TransactionsModule } from './transactions/transactions.module';
+import { CardsModule } from './cards/cards.module';
+import { PiggyBankModule } from './piggy-bank/piggy-bank.module';
 
 @Module({
   imports: [
@@ -19,6 +21,8 @@ import { TransactionsModule } from './transactions/transactions.module';
     CategoryModule,
     FilesModule,
     TransactionsModule,
+    CardsModule,
+    PiggyBankModule,
   ],
   controllers: [],
   providers: [AppService],
