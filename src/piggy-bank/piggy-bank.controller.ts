@@ -57,6 +57,7 @@ export class PiggyBankController {
   @ApiInternalServerErrorResponse({
     description: 'Internal Server Error: Something went wrong on the server.',
   })
+  @ApiBearerAuth()
   @Get()
   findAll(@CurrentUser() user) {
     return this.piggyBankService.findAll(user);
@@ -77,11 +78,28 @@ export class PiggyBankController {
   @ApiInternalServerErrorResponse({
     description: 'Internal Server Error: Something went wrong on the server.',
   })
+  @ApiBearerAuth()
   @Get(':id')
   findOne(@CurrentUser() user, @Param('id') id: string) {
     return this.piggyBankService.findOne(user, id);
   }
 
+  @ApiResponse({ status: HttpStatus.CREATED, description: 'Piggy bank updated successfully.' })
+  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Failed to update Piggy bank due to invalid data.' })
+  @ApiCreatedResponse({
+    description: 'The Piggy bank have been successfully updated.',
+    type: CreateUserDto,
+  })
+  @ApiForbiddenResponse({
+    description: 'Forbidden: You do not have the necessary permissions.',
+  })
+  @ApiBadRequestResponse({
+    description: 'Bad Request: Invalid input data provided.',
+  })
+  @ApiInternalServerErrorResponse({
+    description: 'Internal Server Error: Something went wrong on the server.',
+  })
+  @ApiBearerAuth()
   @Put(':id')
   update(@CurrentUser() user, @Param('id') id: string, @Body() updateData) {
     return this.piggyBankService.update(user, id, updateData);
@@ -102,6 +120,7 @@ export class PiggyBankController {
   @ApiInternalServerErrorResponse({
     description: 'Internal Server Error: Something went wrong on the server.',
   })
+  @ApiBearerAuth()
   @Delete(':id')
   remove(@CurrentUser() user, @Param('id') id: string) {
     return this.piggyBankService.remove(user, id);
