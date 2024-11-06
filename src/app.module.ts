@@ -8,9 +8,13 @@ import { TokensModule } from './tokens/tokens.module';
 import { CategoryModule } from './category/category.module';
 import { FilesModule } from './files/files.module';
 import { TransactionsModule } from './transactions/transactions.module';
+import { DevtoolsModule } from '@nestjs/devtools-integration';
 
 @Module({
   imports: [
+    DevtoolsModule.register({
+      http: process.env.NODE_ENV !== 'production',
+    }),
     ConfigModule.forRoot({ isGlobal: true }),
     MongooseModule.forRoot(process.env.DB_URL),
     UsersModule,
