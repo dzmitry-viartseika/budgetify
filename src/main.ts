@@ -12,7 +12,7 @@ async function bootstrap() {
     key: fs.readFileSync('./src/cert/localhost.key.pem'),
     cert: fs.readFileSync('./src/cert/localhost.cert.pem'),
   };
-  const app = await NestFactory.create(AppModule, { cors: true, httpsOptions });
+  const app = await NestFactory.create(AppModule, { cors: true, snapshot: true, httpsOptions });
   app.setGlobalPrefix(API_VERSION);
   app.useGlobalPipes();
   app.useGlobalFilters(new HttpExceptionFilter());
