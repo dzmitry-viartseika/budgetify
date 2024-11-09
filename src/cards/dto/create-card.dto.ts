@@ -1,5 +1,6 @@
-import { IsString, IsNotEmpty, IsOptional, IsNumber, Min } from 'class-validator';
+import { IsString, IsNotEmpty, IsOptional, IsEnum } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { CurrencyEnum } from '../../types/enums/currency.enum';
 export class CreateCardDto {
   @ApiProperty({
     description: 'Card title',
@@ -13,22 +14,12 @@ export class CreateCardDto {
   @ApiProperty({
     description: 'Card currency',
     required: true,
-    example: 'USD',
+    enum: CurrencyEnum,
+    example: CurrencyEnum.USD,
+    default: CurrencyEnum.USD,
   })
-  @IsString()
-  @IsNotEmpty()
-  readonly currency: string;
-
-  @ApiProperty({
-    description: 'Card balance',
-    required: true,
-    example: 0,
-    default: 0,
-  })
-  @Min(0)
-  @IsNumber()
-  @IsNotEmpty()
-  readonly balance: number;
+  @IsEnum(CurrencyEnum)
+  readonly currency: CurrencyEnum = CurrencyEnum.USD;
 
   @ApiProperty({
     description: 'Card description',

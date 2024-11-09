@@ -35,6 +35,17 @@ export class CreatePiggyBankDto {
   readonly savedAmount: number;
 
   @ApiProperty({
+    description: 'Piggy bank balance',
+    required: true,
+    example: 0,
+    default: 0,
+  })
+  @Min(0)
+  @IsNumber()
+  @IsNotEmpty()
+  readonly balance: number;
+
+  @ApiProperty({
     description: 'Piggy bank date',
     required: true,
     example: '2024-10-01T00:00:00.000Z',

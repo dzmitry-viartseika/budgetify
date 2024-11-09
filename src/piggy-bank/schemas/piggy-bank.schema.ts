@@ -15,6 +15,9 @@ export class PiggyBank extends Document {
   @Prop({ required: true })
   date: Date;
 
+  @Prop({ required: true })
+  balance: number;
+
   @Prop({ type: Types.ObjectId, ref: 'Card', required: true })
   cardId: string;
 }

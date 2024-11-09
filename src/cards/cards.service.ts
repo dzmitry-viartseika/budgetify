@@ -22,8 +22,6 @@ export class CardsService {
 
     const savedCard = await createdCard.save();
 
-    await this.userModel.findByIdAndUpdate(user.id, { $push: { cards: savedCard._id } }, { new: true });
-
     this.logger.verbose(`User added new card ${Card.name} successfully`);
     return savedCard;
   }
@@ -87,16 +85,16 @@ export class CardsService {
       );
     }
 
-    const userUpdateResult = await this.userModel
-      .findOneAndUpdate({ _id: user.id, cards: cardObjectId }, { $pull: { cards: cardObjectId } }, { new: true })
-      .exec();
-
-    if (!userUpdateResult) {
-      this.logger.warn(`Card ID ${id} not found in user ${user.id}'s cards array`);
-    } else {
-      this.logger.verbose(`User ${user.id} removed card ${id} successfully`);
-    }
-
+    // const userUpdateResult = await this.userModel
+    //   .findOneAndUpdate({ _id: user.id, cards: cardObjectId }, { $pull: { cards: cardObjectId } }, { new: true })
+    //   .exec();
+    //
+    // if (!userUpdateResult) {
+    //   this.logger.warn(`Card ID ${id} not found in user ${user.id}'s cards array`);
+    // } else {
+    //   this.logger.verbose(`User ${user.id} removed card ${id} successfully`);
+    // }
+    //
     return deletedCard;
   }
 }

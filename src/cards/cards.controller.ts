@@ -100,7 +100,7 @@ export class CardsController {
   })
   @ApiBearerAuth()
   @Put(':id')
-  update(@CurrentUser() user, @Param('id') id: string, @Body() updateData) {
+  update(@CurrentUser() user, @Param('id') id: string, @Body() updateData: CreateCardDto) {
     return this.cardsService.update(user, id, updateData);
   }
 
