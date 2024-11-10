@@ -9,6 +9,7 @@ import { CategoryModule } from './category/category.module';
 import { FilesModule } from './files/files.module';
 import { TransactionsModule } from './transactions/transactions.module';
 import { DevtoolsModule } from '@nestjs/devtools-integration';
+import { SubscriptionModule } from './subscriptions/subscriptions.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { DevtoolsModule } from '@nestjs/devtools-integration';
     CategoryModule,
     FilesModule,
     TransactionsModule,
+    SubscriptionModule,
   ],
   controllers: [],
   providers: [AppService],
