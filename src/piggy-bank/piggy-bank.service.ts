@@ -39,7 +39,10 @@ export class PiggyBankService {
       );
     }
 
-    const savedPiggyBank = new this.piggyBankModel(piggyBankData);
+    const savedPiggyBank = new this.piggyBankModel({
+      ...piggyBankData,
+      userId: user.id,
+    });
     await savedPiggyBank.save();
 
     await this.cardModel.findByIdAndUpdate(piggyBankData.cardId, { $inc: { balance: -piggyBankData.savedAmount } });

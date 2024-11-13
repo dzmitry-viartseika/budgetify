@@ -3,7 +3,7 @@ import { PiggyBankController } from './piggy-bank.controller';
 import { PiggyBankService } from './piggy-bank.service';
 import { NotFoundException, ForbiddenException } from '@nestjs/common';
 
-describe.skip('PiggyBankController', () => {
+describe('PiggyBankController', () => {
   let controller: PiggyBankController;
   let service: PiggyBankService;
 

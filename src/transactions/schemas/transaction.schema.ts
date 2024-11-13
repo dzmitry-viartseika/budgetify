@@ -7,8 +7,8 @@ export type TransactionDocument = Transaction & Document;
 
 @Schema()
 export class Transaction extends Document {
-  @Prop({ type: Types.ObjectId, ref: 'User', required: true })
-  userId: string;
+  @Prop({ type: Types.ObjectId, ref: 'Card', required: true })
+  cardId: string;
 
   @Prop({ required: true })
   title: string;

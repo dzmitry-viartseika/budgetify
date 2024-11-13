@@ -1,6 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 
+export type PiggyBankDocument = PiggyBank & Document;
+
 @Schema()
 export class PiggyBank extends Document {
   @Prop({ required: true })
@@ -20,6 +22,9 @@ export class PiggyBank extends Document {
 
   @Prop({ type: Types.ObjectId, ref: 'Card', required: true })
   cardId: string;
+
+  @Prop({ type: Types.ObjectId, ref: 'User', required: true })
+  userId: string;
 }
 
 export const PiggyBankSchema = SchemaFactory.createForClass(PiggyBank);

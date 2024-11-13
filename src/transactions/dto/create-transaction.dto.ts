@@ -23,6 +23,13 @@ export class CreateTransactionDto {
   title: string;
 
   @ApiProperty({
+    description: 'Transaction cardId',
+    required: true,
+  })
+  @IsString({ message: 'The CardId is required' })
+  cardId: string;
+
+  @ApiProperty({
     description: 'Transaction category list',
     required: true,
   })
