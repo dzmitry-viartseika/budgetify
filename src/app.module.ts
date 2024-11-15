@@ -10,9 +10,11 @@ import { FilesModule } from './files/files.module';
 import { TransactionsModule } from './transactions/transactions.module';
 import { DevtoolsModule } from '@nestjs/devtools-integration';
 import { SubscriptionModule } from './subscriptions/subscriptions.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
+    ScheduleModule.forRoot(),
     DevtoolsModule.register({
       http: process.env.NODE_ENV !== 'production',
     }),
