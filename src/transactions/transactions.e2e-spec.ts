@@ -1,22 +1,23 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication, HttpStatus } from '@nestjs/common';
+import { HttpStatus, INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from '../app.module';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { TransactionsModule } from './transactions.module';
+import { CategoryTypeEnum } from '../types/enums/category-type.enum';
 
 const CREATE_TRANSACTION_DTO: CreateTransactionDto = {
   title: 'Netflix',
   payee: 'Landlord',
   categories: ['Housing', 'Rent'],
   amount: 500,
-  type: 'Expense',
+  type: CategoryTypeEnum.EXPENSE,
   paymentDate: new Date('2024-10-01T00:00:00.000Z'),
   description: 'October rent payment',
   files: [],
 };
 
-describe.only('TransactionController (e2e)', () => {
+describe('TransactionController (e2e)', () => {
   let app: INestApplication;
   let accessToken: string;
   let transactionId: string;

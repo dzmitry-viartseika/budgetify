@@ -9,6 +9,8 @@ import { CategoryModule } from './category/category.module';
 import { FilesModule } from './files/files.module';
 import { TransactionsModule } from './transactions/transactions.module';
 import { DevtoolsModule } from '@nestjs/devtools-integration';
+import { CardsModule } from './cards/cards.module';
+import { PiggyBankModule } from './piggy-bank/piggy-bank.module';
 import { ObligatoryModule } from './obligatory/obligatory.module';
 
 @Module({
@@ -24,6 +26,8 @@ import { ObligatoryModule } from './obligatory/obligatory.module';
     CategoryModule,
     FilesModule,
     TransactionsModule,
+    CardsModule,
+    PiggyBankModule,
     ObligatoryModule,
   ],
   controllers: [],
