@@ -57,7 +57,7 @@ describe('GetSubscriptionsHandler', () => {
   });
 
   it('should filter subscriptions by search term', async () => {
-    const searchResults = [mockSubscriptions[0]]; // Only the first item matches "Subscription 1"
+    const searchResults = [mockSubscriptions[0]];
     (model.find as jest.Mock).mockImplementation(() => ({
       skip: jest.fn().mockImplementation(() => ({
         limit: jest.fn().mockImplementation(() => ({
@@ -105,7 +105,7 @@ describe('GetSubscriptionsHandler', () => {
   });
 
   it('should calculate total pages correctly', async () => {
-    const subscriptionsPage = mockSubscriptions.slice(0, 2); // Mock a subset of data for page 1
+    const subscriptionsPage = mockSubscriptions.slice(0, 2);
     (model.find as jest.Mock).mockImplementation(() => ({
       skip: jest.fn().mockImplementation(() => ({
         limit: jest.fn().mockImplementation(() => ({
@@ -113,7 +113,7 @@ describe('GetSubscriptionsHandler', () => {
         })),
       })),
     }));
-    (model.countDocuments as jest.Mock).mockResolvedValue(3); // 3 total items
+    (model.countDocuments as jest.Mock).mockResolvedValue(3);
 
     const query = new GetSubscriptionsQuery(1, 2, '', 'user123');
     const result = await handler.execute(query);
