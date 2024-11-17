@@ -7,19 +7,19 @@ import { ForbiddenException, NotFoundException } from '@nestjs/common';
 
 @CommandHandler(DeleteObligatoryCommand)
 export class DeleteObligatoryHandler implements ICommandHandler<DeleteObligatoryCommand> {
-  constructor(@InjectModel(Obligatory.name) private subscriptionModel: Model<ObligatoryDocument>) {}
+  constructor(@InjectModel(Obligatory.name) private obligatoryModel: Model<ObligatoryDocument>) {}
 
   async execute(command: DeleteObligatoryCommand): Promise<void> {
-    const subscription = await this.subscriptionModel.findById(command.id).exec();
+    const obligatory = await this.obligatoryModel.findById(command.id).exec();
 
-    if (!subscription) {
+    if (!obligatory) {
       throw new NotFoundException('Obligatory not found');
     }
 
-    if (subscription.userId !== command.userId) {
+    if (obligatory.userId !== command.userId) {
       throw new ForbiddenException('You do not have permission to delete this obligatory');
     }
 
-    await this.subscriptionModel.findByIdAndDelete(command.id).exec();
+    await this.obligatoryModel.findByIdAndDelete(command.id).exec();
   }
 }

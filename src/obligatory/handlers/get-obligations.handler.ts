@@ -6,7 +6,7 @@ import { GetObligationsQuery } from '../queries/get-obligations.query';
 
 @QueryHandler(GetObligationsQuery)
 export class GetObligationsHandler implements IQueryHandler<GetObligationsQuery> {
-  constructor(@InjectModel(Obligatory.name) private subscriptionModel: Model<ObligatoryDocument>) {}
+  constructor(@InjectModel(Obligatory.name) private obligatoryModel: Model<ObligatoryDocument>) {}
 
   async execute(
     query: GetObligationsQuery
@@ -18,13 +18,13 @@ export class GetObligationsHandler implements IQueryHandler<GetObligationsQuery>
       filter['title'] = { $regex: search, $options: 'i' };
     }
 
-    const data = await this.subscriptionModel
+    const data = await this.obligatoryModel
       .find(filter)
       .skip((page - 1) * limit)
       .limit(limit)
       .exec();
 
-    const total = await this.subscriptionModel.countDocuments(filter);
+    const total = await this.obligatoryModel.countDocuments(filter);
 
     const totalPages = Math.ceil(total / limit);
     const currentPage = page;

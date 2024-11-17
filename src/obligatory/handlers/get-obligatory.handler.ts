@@ -7,19 +7,19 @@ import { ForbiddenException, NotFoundException } from '@nestjs/common';
 
 @QueryHandler(GetObligatoryQuery)
 export class GetObligatoryHandler implements IQueryHandler<GetObligatoryQuery> {
-  constructor(@InjectModel(Obligatory.name) private subscriptionModel: Model<ObligatoryDocument>) {}
+  constructor(@InjectModel(Obligatory.name) private obligatoryModel: Model<ObligatoryDocument>) {}
 
   async execute(query: GetObligatoryQuery): Promise<Obligatory> {
-    const subscription = await this.subscriptionModel.findById(query.id).exec();
+    const obligatory = await this.obligatoryModel.findById(query.id).exec();
 
-    if (!subscription) {
+    if (!obligatory) {
       throw new NotFoundException('Obligatory not found');
     }
 
-    if (subscription.userId !== query.userId) {
+    if (obligatory.userId !== query.userId) {
       throw new ForbiddenException('You do not have permission to read this obligatory');
     }
 
-    return this.subscriptionModel.findById(query.id).exec();
+    return this.obligatoryModel.findById(query.id).exec();
   }
 }
