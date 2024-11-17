@@ -8,7 +8,7 @@ import { request } from 'express';
 
 @CommandHandler(CreateObligatoryCommand)
 export class CreateObligatoryHandler implements ICommandHandler<CreateObligatoryCommand> {
-  constructor(@InjectModel(Obligatory.name) private subscriptionModel: Model<ObligatoryDocument>) {}
+  constructor(@InjectModel(Obligatory.name) private obligatoryModel: Model<ObligatoryDocument>) {}
 
   async execute(command: CreateObligatoryCommand): Promise<Obligatory> {
     const { title, amount, paymentStartDate, paymentEndDate, description, userId, cardId } = command;
@@ -24,7 +24,7 @@ export class CreateObligatoryHandler implements ICommandHandler<CreateObligatory
       );
     }
 
-    const newObligatory = await this.subscriptionModel.create({
+    const newObligatory = await this.obligatoryModel.create({
       title,
       amount,
       paymentStartDate,

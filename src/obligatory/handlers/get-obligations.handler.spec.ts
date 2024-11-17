@@ -105,11 +105,11 @@ describe('GetObligationsHandler', () => {
   });
 
   it('should calculate total pages correctly', async () => {
-    const subscriptionsPage = mockObligations.slice(0, 2);
+    const obligationsPage = mockObligations.slice(0, 2);
     (model.find as jest.Mock).mockImplementation(() => ({
       skip: jest.fn().mockImplementation(() => ({
         limit: jest.fn().mockImplementation(() => ({
-          exec: jest.fn().mockResolvedValue(subscriptionsPage),
+          exec: jest.fn().mockResolvedValue(obligationsPage),
         })),
       })),
     }));
@@ -119,7 +119,7 @@ describe('GetObligationsHandler', () => {
     const result = await handler.execute(query);
 
     expect(result).toEqual({
-      data: subscriptionsPage,
+      data: obligationsPage,
       total: 3,
       totalPages: 2,
       currentPage: 1,
