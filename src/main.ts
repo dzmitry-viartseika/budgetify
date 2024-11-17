@@ -30,6 +30,8 @@ async function bootstrap() {
     .addTag('users')
     .addTag('auth')
     .addTag('categories')
+    .addTag('cards')
+    .addTag('piggy-banks')
     .setVersion('1.0')
     .addBearerAuth({
       type: 'http',
