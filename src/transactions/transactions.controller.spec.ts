@@ -23,6 +23,7 @@ const CREATE_TRANSACTION_DTO: CreateTransactionDto = {
   paymentDate: new Date('2024-10-01T00:00:00.000Z'),
   description: 'October rent payment',
   files: [],
+  cardId: 'cardId123',
 };
 
 describe('TransactionsController', () => {

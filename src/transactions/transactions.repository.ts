@@ -1,11 +1,12 @@
-import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { ForbiddenException, HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Transaction, TransactionDocument } from './schemas/transaction.schema';
 import { request } from 'express';
-import { FilesService } from '../files/files.service';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { getPresignedUrl } from '../files/utils/getPresignedUrl';
+import { PiggyBank, PiggyBankDocument } from '../piggy-bank/schemas/piggy-bank.schema';
+import { CategoryTypeEnum } from '../types/enums/category-type.enum';
 
 @Injectable()
 export class TransactionRepository {
@@ -13,26 +14,64 @@ export class TransactionRepository {
 
   constructor(
     @InjectModel(Transaction.name) private transactionModel: Model<TransactionDocument>,
-    private readonly fileService: FilesService
+    @InjectModel(PiggyBank.name) private piggyBankModel: Model<PiggyBankDocument>
   ) {}
 
   async create(user, transaction: CreateTransactionDto) {
+    console.log('transaction.userId', transaction.userId);
+    console.log('transaction.cardId', transaction.cardId);
     this.logger.verbose(`User creating transaction with data ${transaction}`);
+
+    const piggyBank = await this.verifyUserAccessToPiggyBank(user.id || transaction.userId, transaction.cardId);
+
     const createdTransaction = new this.transactionModel({
       ...transaction,
-      userId: user.id,
+      userId: user.id || transaction.userId,
     });
 
-    this.logger.verbose(`User created transaction with ID ${createdTransaction._id} files successfully`);
+    await createdTransaction.save();
 
-    return createdTransaction.save();
+    await this.updatePiggyBankBalance(transaction, piggyBank);
+
+    this.logger.verbose(`Transaction created with ID ${createdTransaction._id}`);
+
+    return createdTransaction;
+  }
+
+  private async verifyUserAccessToPiggyBank(userId: string, cardId: string): Promise<PiggyBankDocument> {
+    console.log('cardId', cardId);
+    console.log('userId', userId);
+    const piggyBank = await this.piggyBankModel.findOne({ cardId, userId });
+
+    if (!piggyBank) {
+      throw new ForbiddenException(`User does not have access to the PiggyBank associated with card ID ${cardId}`);
+    }
+
+    return piggyBank;
+  }
+
+  private async updatePiggyBankBalance(transaction: CreateTransactionDto, piggyBank: PiggyBankDocument) {
+    const { amount, type } = transaction;
+
+    if (type === CategoryTypeEnum.INCOME) {
+      piggyBank.balance += amount;
+      piggyBank.savedAmount += amount;
+    } else if (type === CategoryTypeEnum.EXPENSE) {
+      if (piggyBank.balance < amount) {
+        throw new ForbiddenException(`Insufficient funds in PiggyBank for expense transaction`);
+      }
+      piggyBank.balance -= amount;
+    }
+
+    await piggyBank.save();
+    this.logger.verbose(`Updated PiggyBank balance for user ID ${piggyBank.userId}`);
   }
 
   async getById(transactionId: string, user) {
     const selectedTransaction = await this.transactionModel.findOne({ userId: user.id, _id: transactionId }).exec();
 
     if (!selectedTransaction) {
-      this.logger.error(`Transaction with id ${selectedTransaction.id} already exists`);
+      this.logger.error(`Transaction with id ${selectedTransaction.id} is not exists`);
       throw new HttpException(
         {
           status: HttpStatus.NOT_FOUND,
