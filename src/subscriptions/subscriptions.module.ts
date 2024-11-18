@@ -8,9 +8,17 @@ import { UpdateSubscriptionHandler } from './handlers/update-subscription.handle
 import { DeleteSubscriptionHandler } from './handlers/delete-subscription.handler';
 import { GetSubscriptionHandler } from './handlers/get-subscription.handler';
 import { GetSubscriptionsHandler } from './handlers/get-subscriptions.handler';
+import { GetSubscriptionsForTodayQuery } from './queries/get-subscriptions-for-today.query';
+import { GetSubscriptionsForTodayHandler } from './handlers/get-subscriptions-for-today-query.handler';
+import { SubscriptionsCron } from './subscriptions.cron';
+import { TransactionsModule } from '../transactions/transactions.module';
 
 @Module({
-  imports: [MongooseModule.forFeature([{ name: Subscription.name, schema: SubscriptionSchema }]), CqrsModule],
+  imports: [
+    MongooseModule.forFeature([{ name: Subscription.name, schema: SubscriptionSchema }]),
+    CqrsModule,
+    TransactionsModule,
+  ],
   controllers: [SubscriptionController],
   providers: [
     CreateSubscriptionHandler,
@@ -18,6 +26,9 @@ import { GetSubscriptionsHandler } from './handlers/get-subscriptions.handler';
     DeleteSubscriptionHandler,
     GetSubscriptionHandler,
     GetSubscriptionsHandler,
+    GetSubscriptionsForTodayQuery,
+    GetSubscriptionsForTodayHandler,
+    SubscriptionsCron,
   ],
 })
 export class SubscriptionModule {}

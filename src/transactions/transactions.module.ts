@@ -10,5 +10,6 @@ import { FilesModule } from '../files/files.module';
   imports: [MongooseModule.forFeature([{ name: 'Transaction', schema: TransactionSchema }]), FilesModule],
   controllers: [TransactionsController],
   providers: [TransactionsService, TransactionRepository],
+  exports: [TransactionsService],
 })
 export class TransactionsModule {}
