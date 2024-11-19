@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import { QueryBus } from '@nestjs/cqrs';
 import { GetSubscriptionsForTodayQuery } from './queries/get-subscriptions-for-today.query';
@@ -9,21 +9,20 @@ import { InjectModel } from '@nestjs/mongoose';
 
 @Injectable()
 export class SubscriptionsCron {
+  private readonly logger = new Logger(Subscription.name);
   constructor(
     private readonly queryBus: QueryBus,
     private readonly transactionsService: TransactionsService,
     @InjectModel(Subscription.name) private readonly subscriptionModel: Model<SubscriptionDocument>
   ) {}
 
-  @Cron('*/10 * * * * *') // Каждые 10 секунд (для теста)
+  @Cron('*/10 * * * * *')
   async handleCron() {
     const subscriptions = await this.queryBus.execute(new GetSubscriptionsForTodayQuery());
-    console.log('Сегодняшние подписки:', subscriptions);
-
+    this.logger.verbose(`Subscriptions list for today: ${subscriptions}`);
     for (const subscription of subscriptions) {
-      console.log('subscription', subscription);
+      this.logger.verbose(`Current subscription: ${subscription._id}`);
       try {
-        // 1. Инициация транзакции
         const transaction = await this.transactionsService.create(subscription.userId, {
           categories: subscription.categories,
           title: subscription.title,
@@ -33,19 +32,14 @@ export class SubscriptionsCron {
           paymentDate: subscription.paymentStartDate,
           userId: subscription.userId,
         });
-        console.log(`Транзакция создана: ${transaction._id}`);
-        // 67350798832cb5bd2d5bf2f6 USERID
-        // 673bac868037f5e5f0910c85 CARDID
-        // 673bac9a8037f5e5f0910c8c PIGGYBANKID
-        // 2. Обновление paymentStartDate на +1 месяц
+        this.logger.verbose(`Transaction created: ${transaction._id}`);
+
         const newPaymentStartDate = new Date(subscription.paymentStartDate);
         newPaymentStartDate.setMonth(newPaymentStartDate.getMonth() + 1);
-        console.log('newPaymentStartDate', newPaymentStartDate);
         await this.subscriptionModel.updateOne({ _id: subscription._id }, { paymentStartDate: newPaymentStartDate });
-
-        console.log(`Обновлен paymentStartDate для подписки ${subscription._id}`);
+        this.logger.verbose(`Updated paymentStartDate for current subscription ${subscription._id}`);
       } catch (error) {
-        console.error(`Ошибка обработки подписки ${subscription._id}:`, error);
+        this.logger.error(`Subscription processing error ${subscription._id}:, ${error}`);
       }
     }
   }

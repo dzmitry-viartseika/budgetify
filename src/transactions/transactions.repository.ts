@@ -18,8 +18,6 @@ export class TransactionRepository {
   ) {}
 
   async create(user, transaction: CreateTransactionDto) {
-    console.log('transaction.userId', transaction.userId);
-    console.log('transaction.cardId', transaction.cardId);
     this.logger.verbose(`User creating transaction with data ${transaction}`);
 
     const piggyBank = await this.verifyUserAccessToPiggyBank(user.id || transaction.userId, transaction.cardId);
@@ -39,8 +37,6 @@ export class TransactionRepository {
   }
 
   private async verifyUserAccessToPiggyBank(userId: string, cardId: string): Promise<PiggyBankDocument> {
-    console.log('cardId', cardId);
-    console.log('userId', userId);
     const piggyBank = await this.piggyBankModel.findOne({ cardId, userId });
 
     if (!piggyBank) {
