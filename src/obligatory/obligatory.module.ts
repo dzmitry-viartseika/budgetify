@@ -8,9 +8,17 @@ import { DeleteObligatoryHandler } from './handlers/delete-obligatory.handler';
 import { GetObligatoryHandler } from './handlers/get-obligatory.handler';
 import { GetObligationsHandler } from './handlers/get-obligations.handler';
 import { CqrsModule } from '@nestjs/cqrs';
+import { GetObligationsForTodayHandler } from './handlers/get-obligations-for-today-query.handler';
+import { GetObligationsForTodayQuery } from './queries/get-obligations-for-today.query';
+import { ObligatoryCron } from './obligatory.cron';
+import { TransactionsModule } from '../transactions/transactions.module';
 
 @Module({
-  imports: [MongooseModule.forFeature([{ name: Obligatory.name, schema: ObligatorySchema }]), CqrsModule],
+  imports: [
+    MongooseModule.forFeature([{ name: Obligatory.name, schema: ObligatorySchema }]),
+    CqrsModule,
+    TransactionsModule,
+  ],
   controllers: [ObligatoryController],
   providers: [
     CreateObligatoryHandler,
@@ -18,6 +26,9 @@ import { CqrsModule } from '@nestjs/cqrs';
     DeleteObligatoryHandler,
     GetObligatoryHandler,
     GetObligationsHandler,
+    GetObligationsForTodayHandler,
+    GetObligationsForTodayQuery,
+    ObligatoryCron,
   ],
 })
 export class ObligatoryModule {}
