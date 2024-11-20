@@ -47,7 +47,7 @@ export class TransactionRepository {
   }
 
   private async updatePiggyBankBalance(transaction: CreateTransactionDto, piggyBank: PiggyBankDocument) {
-    const { amount, type } = transaction;
+    const { amount, type = CategoryTypeEnum.EXPENSE } = transaction;
 
     if (type === CategoryTypeEnum.INCOME) {
       piggyBank.balance += amount;

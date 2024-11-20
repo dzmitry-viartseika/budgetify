@@ -16,7 +16,7 @@ export class SubscriptionsCron {
     @InjectModel(Subscription.name) private readonly subscriptionModel: Model<SubscriptionDocument>
   ) {}
 
-  @Cron('*/10 * * * * *')
+  @Cron('0 0 3 * * *')
   async handleCron() {
     const subscriptions = await this.queryBus.execute(new GetSubscriptionsForTodayQuery());
     this.logger.verbose(`Subscriptions list for today: ${subscriptions}`);
