@@ -70,6 +70,14 @@ export class CreateTransactionDto {
   description?: string;
 
   @ApiProperty({
+    description: 'User for transaction',
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  userId?: string;
+
+  @ApiProperty({
     description: 'Transaction files array',
     required: false,
     isArray: true,

@@ -20,11 +20,11 @@ export class TransactionRepository {
   async create(user, transaction: CreateTransactionDto) {
     this.logger.verbose(`User creating transaction with data ${transaction}`);
 
-    const piggyBank = await this.verifyUserAccessToPiggyBank(user.id, transaction.cardId);
+    const piggyBank = await this.verifyUserAccessToPiggyBank(user.id || transaction.userId, transaction.cardId);
 
     const createdTransaction = new this.transactionModel({
       ...transaction,
-      userId: user.id,
+      userId: user.id || transaction.userId,
     });
 
     await createdTransaction.save();
@@ -47,7 +47,7 @@ export class TransactionRepository {
   }
 
   private async updatePiggyBankBalance(transaction: CreateTransactionDto, piggyBank: PiggyBankDocument) {
-    const { amount, type } = transaction;
+    const { amount, type = CategoryTypeEnum.EXPENSE } = transaction;
 
     if (type === CategoryTypeEnum.INCOME) {
       piggyBank.balance += amount;

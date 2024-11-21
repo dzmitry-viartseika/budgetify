@@ -8,10 +8,10 @@ import { DeleteObligatoryHandler } from './handlers/delete-obligatory.handler';
 import { GetObligatoryHandler } from './handlers/get-obligatory.handler';
 import { GetObligationsHandler } from './handlers/get-obligations.handler';
 import { CqrsModule } from '@nestjs/cqrs';
-import { GetObligationsForTodayHandler } from './handlers/get-obligations-for-today-query.handler';
 import { GetObligationsForTodayQuery } from './queries/get-obligations-for-today.query';
 import { ObligatoryCron } from './obligatory.cron';
 import { TransactionsModule } from '../transactions/transactions.module';
+import { GetObligationsForTodayHandler } from './handlers/get-obligations-for-today-query.handler';
 
 @Module({
   imports: [
