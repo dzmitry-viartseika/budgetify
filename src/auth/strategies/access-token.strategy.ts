@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { JwtPayload } from '../../types/types/jwt-token.type';
 
 @Injectable()
 export class AccessTokenStrategy extends PassportStrategy(Strategy, 'jwt') {
@@ -12,7 +11,14 @@ export class AccessTokenStrategy extends PassportStrategy(Strategy, 'jwt') {
     });
   }
 
-  validate(payload: JwtPayload) {
-    return payload;
+  validate(payload: any) {
+    console.log('Payload received in validate method:', payload); // Логируем payload
+    const user = {
+      id: payload.id,
+      email: payload.email,
+      role: payload.role,
+    };
+    console.log('User object returned from validate:', user); // Логируем возвращаемый объект
+    return user;
   }
 }
