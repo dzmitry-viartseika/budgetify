@@ -30,6 +30,8 @@ async function bootstrap() {
     .addTag('users')
     .addTag('auth')
     .addTag('categories')
+    .addTag('notifications')
+    .addTag('statistics')
     .addTag('cards')
     .addTag('piggy-banks')
     .setVersion('1.0')
