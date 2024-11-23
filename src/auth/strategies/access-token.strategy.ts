@@ -12,13 +12,11 @@ export class AccessTokenStrategy extends PassportStrategy(Strategy, 'jwt') {
   }
 
   validate(payload: any) {
-    console.log('Payload received in validate method:', payload); // Логируем payload
     const user = {
       id: payload.id,
       email: payload.email,
       role: payload.role,
     };
-    console.log('User object returned from validate:', user); // Логируем возвращаемый объект
     return user;
   }
 }

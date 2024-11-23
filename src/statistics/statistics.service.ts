@@ -8,8 +8,6 @@ export class StatisticsService {
   constructor(@InjectModel('Transaction') private readonly transactionModel: Model<Transaction>) {}
 
   async getCategoryStatistics(userId: string, startDate: Date, endDate: Date) {
-    console.log('startDate', startDate);
-    console.log('endDate', endDate);
     const transactions = await this.transactionModel.aggregate([
       {
         $match: {

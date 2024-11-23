@@ -15,7 +15,6 @@ export class StatisticsController {
     @Query('paymentEndDate') endDate: string
   ) {
     const userId = user.id;
-    console.log('user', user);
     return this.statisticsService.getCategoryStatistics(userId, new Date(startDate), new Date(endDate));
   }
 
