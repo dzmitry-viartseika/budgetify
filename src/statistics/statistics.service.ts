@@ -73,7 +73,7 @@ export class StatisticsService {
     ]);
 
     return transactions.map(t => {
-      const economy = t.totalIncome + t.totalExpenses;
+      const economy = t.totalIncome - t.totalExpenses;
       const economyPercentage = t.totalIncome > 0 ? ((economy / t.totalIncome) * 100).toFixed(2) + '%' : '0%';
 
       return {
