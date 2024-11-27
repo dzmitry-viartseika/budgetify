@@ -13,6 +13,7 @@ import { CardsModule } from './cards/cards.module';
 import { PiggyBankModule } from './piggy-bank/piggy-bank.module';
 import { ObligatoryModule } from './obligatory/obligatory.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { SubscriptionModule } from './subscriptions/subscriptions.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { ScheduleModule } from '@nestjs/schedule';
     TransactionsModule,
     CardsModule,
     PiggyBankModule,
+    SubscriptionModule,
     ObligatoryModule,
   ],
   controllers: [],
