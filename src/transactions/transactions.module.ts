@@ -19,6 +19,6 @@ import { PiggyBank, PiggyBankSchema } from '../piggy-bank/schemas/piggy-bank.sch
   ],
   controllers: [TransactionsController],
   providers: [TransactionsService, TransactionRepository],
-  exports: [MongooseModule.forFeature([{ name: 'Transaction', schema: TransactionSchema }])],
+  exports: [MongooseModule.forFeature([{ name: 'Transaction', schema: TransactionSchema }]), TransactionsService],
 })
 export class TransactionsModule {}
