@@ -11,11 +11,7 @@ import { TransactionsModule } from './transactions/transactions.module';
 import { DevtoolsModule } from '@nestjs/devtools-integration';
 import { CardsModule } from './cards/cards.module';
 import { PiggyBankModule } from './piggy-bank/piggy-bank.module';
-import { StatisticsService } from './statistics/statistics.service';
-import { StatisticsController } from './statistics/statistics.controller';
 import { StatisticsModule } from './statistics/statistics.module';
-import { NotificationsService } from './notifications/notifications.service';
-import { NotificationsController } from './notifications/notifications.controller';
 import { NotificationsModule } from './notifications/notifications.module';
 
 @Module({
@@ -36,7 +32,7 @@ import { NotificationsModule } from './notifications/notifications.module';
     StatisticsModule,
     NotificationsModule,
   ],
-  controllers: [StatisticsController, NotificationsController],
-  providers: [AppService, StatisticsService, NotificationsService],
+  controllers: [],
+  providers: [AppService],
 })
 export class AppModule {}
