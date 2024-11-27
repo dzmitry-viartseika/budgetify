@@ -20,7 +20,7 @@ export class RolesGuard implements CanActivate {
 
     this.logger.verbose('User:', user);
 
-    if (!user || !user.role) {
+    if (user?.role !== requiredRole) {
       this.logger.warn('User role is not properly defined:', user?.role);
       return false;
     }
