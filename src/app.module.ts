@@ -11,9 +11,12 @@ import { TransactionsModule } from './transactions/transactions.module';
 import { DevtoolsModule } from '@nestjs/devtools-integration';
 import { CardsModule } from './cards/cards.module';
 import { PiggyBankModule } from './piggy-bank/piggy-bank.module';
+import { ObligatoryModule } from './obligatory/obligatory.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
+    ScheduleModule.forRoot(),
     DevtoolsModule.register({
       http: process.env.NODE_ENV !== 'production',
     }),
@@ -27,6 +30,7 @@ import { PiggyBankModule } from './piggy-bank/piggy-bank.module';
     TransactionsModule,
     CardsModule,
     PiggyBankModule,
+    ObligatoryModule,
   ],
   controllers: [],
   providers: [AppService],
