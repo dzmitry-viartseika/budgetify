@@ -44,7 +44,7 @@ export class AuthService {
     this.logger.verbose(`User created with ID: ${newUser.id} and email address ${newUser.email}`);
     this.logger.verbose(`Creating user with email address: "${newUser.email}"`);
 
-    const tokens = await this.getTokens(newUser.id, newUser.email);
+    const tokens = await this.getTokens(newUser.id, newUser.email, newUser.role);
     await this.tokensService.create(newUser.id, tokens.refreshToken);
     return tokens;
   }
@@ -73,7 +73,7 @@ export class AuthService {
         HttpStatus.UNAUTHORIZED
       );
     }
-    const tokens = await this.getTokens(user.id, user.email);
+    const tokens = await this.getTokens(user.id, user.email, user.role);
     await this.tokensService.update(user.id, tokens.refreshToken);
     return tokens;
   }
@@ -122,7 +122,7 @@ export class AuthService {
       );
     }
 
-    const tokens = await this.getTokens(id, user.email);
+    const tokens = await this.getTokens(id, user.email, user.role);
     this.logger.verbose(`Generated new tokens for user ID: ${id}`);
 
     await this.tokensService.update(id, tokens.refreshToken);
@@ -136,7 +136,7 @@ export class AuthService {
     return hash;
   }
 
-  async getTokens(id: string, email: string) {
+  async getTokens(id: string, email: string, role: string) {
     this.logger.log(`Generating tokens for user ID: ${id}`);
 
     const [accessToken, refreshToken] = await Promise.all([
@@ -144,6 +144,7 @@ export class AuthService {
         {
           id,
           email,
+          role,
         },
         {
           secret: process.env.JWT_ACCESS_SECRET,
@@ -154,6 +155,7 @@ export class AuthService {
         {
           id,
           email,
+          role,
         },
         {
           secret: process.env.JWT_REFRESH_SECRET,

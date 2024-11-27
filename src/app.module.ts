@@ -14,6 +14,8 @@ import { PiggyBankModule } from './piggy-bank/piggy-bank.module';
 import { ObligatoryModule } from './obligatory/obligatory.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { SubscriptionModule } from './subscriptions/subscriptions.module';
+import { StatisticsModule } from './statistics/statistics.module';
+import { NotificationsModule } from './notifications/notifications.module';
 
 @Module({
   imports: [
@@ -31,6 +33,8 @@ import { SubscriptionModule } from './subscriptions/subscriptions.module';
     TransactionsModule,
     CardsModule,
     PiggyBankModule,
+    StatisticsModule,
+    NotificationsModule,
     SubscriptionModule,
     ObligatoryModule,
   ],

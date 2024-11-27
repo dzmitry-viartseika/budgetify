@@ -13,6 +13,11 @@ export class AccessTokenStrategy extends PassportStrategy(Strategy, 'jwt') {
   }
 
   validate(payload: JwtPayload) {
-    return payload;
+    const user = {
+      id: payload.id,
+      email: payload.email,
+      role: payload.role,
+    };
+    return user;
   }
 }
