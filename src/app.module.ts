@@ -16,6 +16,10 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { SubscriptionModule } from './subscriptions/subscriptions.module';
 import { StatisticsModule } from './statistics/statistics.module';
 import { NotificationsModule } from './notifications/notifications.module';
+import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import { GraphQLModule } from '@nestjs/graphql';
+import { TodoModule } from './todo/todo.module';
+import { API_VERSION } from './constants/api-version';
 
 @Module({
   imports: [
@@ -37,6 +41,15 @@ import { NotificationsModule } from './notifications/notifications.module';
     NotificationsModule,
     SubscriptionModule,
     ObligatoryModule,
+    GraphQLModule.forRoot<ApolloDriverConfig>({
+      driver: ApolloDriver,
+      path: `/${API_VERSION}/graphql`,
+      autoSchemaFile: 'schema.gql',
+      playground: true,
+      debug: true,
+      introspection: true,
+    }),
+    TodoModule,
   ],
   controllers: [],
   providers: [AppService],
