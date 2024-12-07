@@ -1,6 +1,6 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 
-@ObjectType() // Модель Todo должна быть декорирована с помощью @ObjectType()
+@ObjectType()
 export class Todo {
   @Field()
   id: string;
