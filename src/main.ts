@@ -6,6 +6,7 @@ import * as fs from 'fs';
 import * as process from 'node:process';
 import { HttpExceptionFilter } from './filters/http-exception.filter';
 import { API_VERSION } from './constants/api-version';
+import helmet from 'helmet';
 
 async function bootstrap() {
   const httpsOptions = {
@@ -13,6 +14,8 @@ async function bootstrap() {
     cert: fs.readFileSync('./src/cert/localhost.cert.pem'),
   };
   const app = await NestFactory.create(AppModule, { cors: true, snapshot: true, httpsOptions });
+
+  app.use(helmet());
   app.setGlobalPrefix(API_VERSION);
   app.useGlobalPipes();
   app.useGlobalFilters(new HttpExceptionFilter());
