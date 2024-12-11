@@ -15,7 +15,22 @@ async function bootstrap() {
   };
   const app = await NestFactory.create(AppModule, { cors: true, snapshot: true, httpsOptions });
 
-  app.use(helmet());
+  app.use(
+    helmet({
+      contentSecurityPolicy: {
+        directives: {
+          defaultSrc: ["'self'"],
+          scriptSrc: ["'self'", 'example.com'],
+          objectSrc: ["'none'"],
+          upgradeInsecureRequests: [],
+        },
+      },
+      hidePoweredBy: true,
+      xFrameOptions: {
+        action: 'deny',
+      },
+    })
+  );
   app.setGlobalPrefix(API_VERSION);
   app.useGlobalPipes();
   app.useGlobalFilters(new HttpExceptionFilter());
