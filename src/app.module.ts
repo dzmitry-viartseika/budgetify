@@ -16,6 +16,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { SubscriptionModule } from './subscriptions/subscriptions.module';
 import { StatisticsModule } from './statistics/statistics.module';
 import { NotificationsModule } from './notifications/notifications.module';
+import { HealthModule } from './health/health.module';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { GraphQLModule } from '@nestjs/graphql';
 import { TodoModule } from './todo/todo.module';
@@ -41,6 +42,7 @@ import { API_VERSION } from './constants/api-version';
     NotificationsModule,
     SubscriptionModule,
     ObligatoryModule,
+    HealthModule,
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       path: `/${API_VERSION}/graphql`,
