@@ -5,7 +5,11 @@ import { MongoHealthIndicator } from './health/mongo.health';
 import { S3HealthIndicator } from './health/s3.health';
 
 @Module({
-  imports: [TerminusModule],
+  imports: [
+    TerminusModule.forRoot({
+      errorLogStyle: 'pretty',
+    }),
+  ],
   controllers: [HealthController],
   providers: [MongoHealthIndicator, S3HealthIndicator],
 })
