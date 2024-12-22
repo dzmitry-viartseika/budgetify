@@ -73,7 +73,19 @@ export class AuthService {
         HttpStatus.UNAUTHORIZED
       );
     }
-    const tokens = await this.getTokens(user.id, user.email, user.role);
+
+    if (user.isTwoFactorEnabled) {
+      throw new HttpException(
+        {
+          status: HttpStatus.OK,
+          message: '2FA required',
+          isTwoFactorEnabled: true,
+        },
+        HttpStatus.OK
+      );
+    }
+
+    const tokens = await this.tokensService.getTokens(user.id, user.email, user.role);
     await this.tokensService.update(user.id, tokens.refreshToken);
     return tokens;
   }

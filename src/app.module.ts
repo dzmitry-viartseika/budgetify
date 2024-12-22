@@ -21,6 +21,7 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { GraphQLModule } from '@nestjs/graphql';
 import { TodoModule } from './todo/todo.module';
 import { API_VERSION } from './constants/api-version';
+import { TwoFactorAuthModule } from './two-factor-auth/two-factor-auth.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { API_VERSION } from './constants/api-version';
     SubscriptionModule,
     ObligatoryModule,
     HealthModule,
+    TwoFactorAuthModule,
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       path: `/${API_VERSION}/graphql`,

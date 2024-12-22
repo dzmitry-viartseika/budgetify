@@ -43,6 +43,20 @@ export class User {
     immutable: true,
   })
   role: string;
+
+  @Expose()
+  @Prop({
+    type: Boolean,
+    default: false,
+  })
+  isTwoFactorEnabled: boolean;
+
+  @Expose()
+  @Prop({
+    type: String,
+    default: '',
+  })
+  twoFactorSecret: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
