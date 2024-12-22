@@ -52,6 +52,7 @@ async function bootstrap() {
     .addTag('statistics')
     .addTag('cards')
     .addTag('piggy-banks')
+    .addTag('2fa')
     .setVersion('1.0')
     .addBearerAuth({
       type: 'http',
